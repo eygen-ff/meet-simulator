@@ -71,6 +71,7 @@
     import {
         Consts
     } from "../consts.js";
+    const nsUuid = require("nativescript-uuid");
 
     export default {
         data() {
@@ -83,8 +84,30 @@
                     password: "",
                     confirmPassword: "",
                     name: ""
-                }
+                },
+                deviceUuid: null
             };
+        },
+        mounted() {
+            this.deviceUuid = nsUuid.getUUID();
+            this.processing = true;
+            this.$backendService.checkDeviceAutoLogin(this.deviceUuid)
+                .then((payload) => {
+                    this.processing = false;
+                    /*if (payload.result === true) {
+                        console.log('mounted result navigate', payload);
+                        this.$navigateTo(Home, {
+                            clearHistory: true
+                        });
+                    }*/
+                    this.isLoggingIn = true;
+                    this.$navigateTo(Home, {clearHistory: true});
+                })
+                .catch((e) => {
+                    console.log('auot login error', e);
+                    this.processing = false;
+                });
+            //console.log('login device', this.deviceUuid);
         },
         methods: {
             toggleForm() {

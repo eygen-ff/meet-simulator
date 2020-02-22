@@ -16,6 +16,7 @@
         "@nativescript/core": "6.4.0",
         "@nativescript/theme": "2.2.1",
         "@progress-nativechat/nativescript-nativechat": "3.0.0",
+        "axios": "^0.19.2",
         "kinvey-nativescript-sdk": "4.2.5",
         "nativescript-accelerometer": "3.0.0",
         "nativescript-background-http": "4.2.1",
@@ -34,6 +35,7 @@
         "nativescript-ui-gauge": "6.0.0",
         "nativescript-ui-listview": "8.0.1",
         "nativescript-ui-sidedrawer": "8.0.0",
+        "nativescript-uuid": "0.0.1",
         "nativescript-vue": "2.4.0",
         "tns-core-modules": "6.4.0"
     },

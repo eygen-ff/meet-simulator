@@ -8,11 +8,48 @@
     appSecret: "09282985d7c540f7b076a9c7fd884c77"
 });*/
 
+import axios from 'axios';
+import UserModel from '../models/UserModel.js';
+
+
+const User = {
+    isLoggedIn: false
+};
+
 export default class BackendService {
 
+    constructor() {
+        this.user = null;
+        this.uuid = null;
+    }
+
+    isLoading() {
+        return this.loading;
+    }
+
+    getHeaders() {
+        return {
+            'Authorization': 'uuid ' + this.uuid
+        }
+    }
+
     isLoggedIn() {
-        //return !!Kinvey.User.getActiveUser();
-        return true;
+        console.log('isLoggedIn', User.isLoggedIn);
+        return User.isLoggedIn;
+    }
+
+    checkDeviceAutoLogin(uuid) {
+        //this.device.uuid = uuid;
+        return new Promise((resolve, reject) => {
+            //setTimeout(() => {
+                //this.user = new UserModel();
+                User.isLoggedIn = true;
+                console.log('checkDeviceAutoLogin result');
+                resolve({
+                    result: true
+                });
+            //}, 3000);
+        });
     }
 
     login(user) {
@@ -37,6 +74,9 @@ export default class BackendService {
     }
 
     getContacts(user) {
+        const uuid = nsUuid.getUUID();
+        console.log(`getContacts >> The device UUID is ${uuid}`);
+
         return new Promise((resolve, reject) => {
             const users = [{
                 id: "11",

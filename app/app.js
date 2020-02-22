@@ -8,7 +8,13 @@ import BackendService from "./services/backend-service";
 
 const backendService = new BackendService();
 Vue.prototype.$backendService = backendService;
+//Vue.prototype.$nsUuid = nsUuid;
 
 new Vue({
+  created() {
+    //backendService.autoLogin(nsUuid.getUUID())
+  },
+  data() {
+  },
   render: h => h("frame", [h(backendService.isLoggedIn() ? routes.home : routes.login)])
 }).$start();
