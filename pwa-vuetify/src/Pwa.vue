@@ -1,5 +1,7 @@
 <template>
-  <router-view/>
+    <transition name="slide-fade">
+        <router-view/>
+    </transition>
 </template>
 
 <script>

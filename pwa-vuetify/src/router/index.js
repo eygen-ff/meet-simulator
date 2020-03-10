@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Contacts from '../views/Contacts.vue'
+import ContactsView from '../views/ContactsView.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Contacts',
-    component: Contacts
+    name: 'Home',
+    component: ContactsView
   },
   {
     path: '/chat/:bot',

@@ -42,8 +42,7 @@ export default {
     },
     methods: {
       onContactClick: function(item) {
-        console.debug('item', item);
-        this.$router.push({ name: 'Chat', params: { bot: '123' } })
+        this.$router.push({ name: 'Chat', params: { bot: item.id } })
       }
     }
 }

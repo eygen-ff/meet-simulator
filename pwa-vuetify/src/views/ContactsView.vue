@@ -2,14 +2,15 @@
 <v-app id="inspire">
     <v-navigation-drawer
       v-model="drawer"
-      app
+      absolute
+      temporary
     >
       <v-list dense>
         <v-list-item link>
           <v-list-item-action>
             <v-icon>apps</v-icon>
           </v-list-item-action>
-          <v-list-item-content>
+          <v-list-item-content @click="onClickMarket">
             <v-list-item-title>Bot Market</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -65,5 +66,11 @@
     data: () => ({
       drawer: null
     }),
+
+    methods: {
+      onClickMarket: function() {
+        this.$router.push({ name: 'Market' })
+      }
+    }
   }
 </script>
