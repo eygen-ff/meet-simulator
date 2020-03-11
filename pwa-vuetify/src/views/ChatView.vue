@@ -18,7 +18,7 @@
     <v-content>
       <v-container fluid id="messages" ref="messagesContainer">
 
-        <template v-for="item in $store.getters.getBotMessages">
+        <template v-for="item in $store.getters.getChatMessages">
           <Message 
             :key="item.id" 
             :text="item.text" 
@@ -51,10 +51,16 @@
 import Message from "../components/Message.vue";
 import BotInfoDialog from "../components/BotInfoDialog.vue";
 import AnswerPanel from "../components/AnswerPanel.vue";
+import {mixin as VueTimers} from 'vue-timers';
 
 export default {
   components: {
     Message, BotInfoDialog, AnswerPanel
+  },
+  mixins: [VueTimers],
+  timers: {
+    renderMessages: { time: 12000, //autostart: true, //repeat: true 
+    }
   },
   data: () => ({
     botId: null,
@@ -64,7 +70,7 @@ export default {
     console.debug('this.$router.currentRoute.params', this.$router.currentRoute.params);
     this.botId = this.$router.currentRoute.params.bot;
     this.$store.dispatch("loadBot", { id: this.botId })
-      .then(this.$store.dispatch("loadChat", { botId: this.botId }))
+      .then(this.$store.dispatch("loadMessages", { botId: this.botId }))
       .then(() => {
         if (document.querySelector("#lastMsg")) {
           setTimeout(() => {
@@ -88,7 +94,14 @@ export default {
       this.$store.dispatch('selectCase', {
         botId: this.botId,
         caseId: answerCase.id
+      }).then(() => {
+        //this.$store.getChatMessages();
+        this.$timer.start('renderMessages');
       });
+    },
+    renderMessages: function() {
+      console.log('render messages');
+      this.$store.dispatch('renderChat');
     }
   },
   computed: {

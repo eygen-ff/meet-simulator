@@ -2,25 +2,44 @@
 
 import BotApi from '../services/BotApi.js';
 
+
+const isReplyInFuture = (lastMessage) => {
+    if (!lastMessage) {
+        return false;
+    }
+
+    if (lastMessage && !lastMessage.reply) {
+        return false;
+    }
+    let replyInFuture = false;
+    if (new Date(lastMessage.reply.showAt) > new Date()) {
+        replyInFuture = true;
+    }
+    return replyInFuture;
+};
+
 const chatStateHelper = (lastMessage, isSendingCase) => {
     if (!lastMessage) {
         return 'nocases';
     }
     if (lastMessage.reply) {
-        let replyInFuture = false;
-        if (new Date(lastMessage.reply.showAt) > new Date()) {
-            replyInFuture = true;
-        }
-        if (!replyInFuture && lastMessage.selected) {
+        if (isReplyInFuture(lastMessage)) {
             return 'replying';
-        } else if (!lastMessage.selected) {
-            return 'cases';
         } else {
-            return 'nocases'; // безвариантная ситуация, диалог не может быть продолжен
+            if (!lastMessage.selected) {
+                return 'cases';
+            } else if (isSendingCase) {
+                return 'sending';
+            } else {
+                return 'nocases';
+            }
         }
 
     } else if (isSendingCase) { // отправка ответа
         return 'sending';
+
+    } else if (lastMessage.selected) {
+        return 'noanswer';
 
     } else { // пустой чат, не было ответов бота, "приветствие"
         return 'cases';
@@ -37,6 +56,8 @@ const BotStore = {
         rate: 0,
         gallery: null,
         messages: null,
+        chat: null,
+        chatState: null,
         lastMessage: null,
         loadingInfo: false,
         isSendingCase: false
@@ -73,34 +94,7 @@ const BotStore = {
             return state.messages ? state.messages : []
         },
         getChatMessages: (state) => { // отображаемые сообщения
-           if (!state.messages) {
-               return [];
-           }
-           let chatMessages = [];
-           for (let i in state.messages) {
-                const message = state.messages[i];
-                let replyInFuture = false;
-                if (new Date(message.reply.showAt) > new Date()) {
-                    replyInFuture = true;
-                }
-                if (message.reply && !replyInFuture) {
-                    chatMessages.push({
-                        id: message.id, 
-                        text: message.reply.text,
-                        flagIsOwner: false, 
-                        sendAt: message.reply.showAt
-                    });
-                }
-                if (!replyInFuture && message.selected) {
-                    chatMessages.push({
-                        id: message.id + ':' + message.selected, 
-                        text: message.cases[message.selected],
-                        flagIsOwner: true, 
-                        sendAt: message.sendAt
-                    });
-                }
-           }
-           return chatMessages;
+            return state.chat ? state.chat : [];
         },
 
         getChatLastMessage: (state) => {
@@ -114,16 +108,14 @@ const BotStore = {
          *  'nocases' - диалог окончен
          */
         getChatState: (state) => { 
-            return chatStateHelper(state.lastMessage, state.isSendingCase);
+            return state.chatState;
         },
 
         /**
          * ответы
          */
         getChatAnswerCases: (state) => {
-            const chatState = chatStateHelper(state.lastMessage, state.isSendingCase);
-            console.debug('getChatAnswerCases',chatState);
-            if (chatState === 'cases' && state.status === 1) {
+            if (state.chatState === 'cases' && state.status === 1) {
                 return state.lastMessage.cases;
             } else {
                 return null;
@@ -153,11 +145,12 @@ const BotStore = {
             state.gallery = null;
             state.messages = null;
             state.lastMessage = null;
+            state.chat = null;
         },
         toggleLoadingBotInfo: (state, payload) => {
             state.loadingInfo = payload;
         },
-        setChat: (state, chat) => {
+        setMessages: (state, chat) => {
             state.messages = chat.messages;
             state.lastMessage = chat.messages ? chat.messages[chat.messages.length - 1] : null;
         },
@@ -166,7 +159,7 @@ const BotStore = {
         },
         setReply: (state, payload) => {
             state.messages[state.messages.length - 1].selected = payload.selected;
-            state.messages[state.messages.length - 1].sendAt = new Date();
+            state.messages[state.messages.length - 1].sendAt = new Date().toString();
             state.messages.push({
                 id: payload.messageId, 
                 reply: payload.reply, 
@@ -175,6 +168,48 @@ const BotStore = {
                 sendAt: null
             });
             state.lastMessage = state.messages[state.messages.length - 1];
+        },
+        setChat: (state) => {
+            if (!state.messages) {
+                state.chat = [];
+                return;
+            }
+            let chatMessages = [];
+            for (let i in state.messages) {
+                 const message = state.messages[i];
+                 if (message.reply) {
+                     let replyInFuture = false;
+                     if (new Date(message.reply.showAt) > new Date()) {
+                         replyInFuture = true;
+                     }
+                     if (!replyInFuture) {
+                         chatMessages.push({
+                             id: message.id, 
+                             text: message.reply.text,
+                             flagIsOwner: false, 
+                             sendAt: message.reply.showAt
+                         });
+                     }
+                 }
+                 if (message.selected) {
+                     let caseText = '';
+                     for (let i in message.cases) {
+                         if (message.cases[i].id === message.selected) {
+                             caseText = message.cases[i].text;
+                         }
+                     }
+                     chatMessages.push({
+                         id: message.id + ':' + message.selected, 
+                         text: caseText,
+                         flagIsOwner: true, 
+                         sendAt: message.sendAt
+                     });
+                 }
+            }
+            state.chat = chatMessages;
+        },
+        setChatState: (state) => {
+            state.chatState = chatStateHelper(state.lastMessage, state.isSendingCase);
         }
     },
     actions: {
@@ -198,11 +233,13 @@ const BotStore = {
         toggleLoadingBotInfo: (state, flagToggle) => {
             state.commit('toggleLoadingBotInfo', flagToggle);
         },
-        loadChat: (state, payload) => {
+        loadMessages: (state, payload) => {
             return new Promise((resolve) => {
                 BotApi.getBotChat(payload.botId, null)
                     .then((botInfo) => {
-                        state.commit('setChat', botInfo);
+                        state.commit('setMessages', botInfo);
+                        state.commit('setChat');
+                        state.commit('setChatState');
                         resolve();
                     })
                     .catch(() => {
@@ -210,20 +247,28 @@ const BotStore = {
             });
         },
         selectCase: (state, payload) => {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 state.commit('toggleSendingCase', true);
                 BotApi.sendCase(payload.botId, payload.caseId, null)
                     .then((replyPayload) => {
                         replyPayload.selected = payload.caseId;
-                        console.debug('selectCase', replyPayload);
                         state.commit('setReply', replyPayload);
                         state.commit('toggleSendingCase', false);
+                        state.commit('setChat');
+                        state.commit('setChatState');
+                        //console.debug('message', state.getters.getChatMessages, state.getters.getAllMessages);
+                        //state.gettersgetChatMessages();
                         resolve();
                     })
                     .catch(() => {
                         state.commit('toggleSendingCase', false);
+                        reject();
                     });
             });
+        },
+        renderChat: (state) => {
+            state.commit('setChat');
+            state.commit('setChatState');
         }
     }
 };

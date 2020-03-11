@@ -49,20 +49,20 @@ class BotApi {
                     selected: 3,
                     sendAt: "2020.01.01 12:33:22"
                 },
-                /*{ // мое второе сообщение на ответ бота, должно быть вместе со следующим сообщением бота, чтобы не было безвариантной ситуации
+                { // мое второе сообщение на ответ бота, должно быть вместе со следующим сообщением бота, чтобы не было безвариантной ситуации
                     id: 2, 
                     reply: {
                         text: "bot reply 1",
-                        showAt: "2020.01.01 12:33:22"
+                        showAt: "2020.01.01 12:35:22"
                     }, 
                     cases: [
                         {id: 5, text: 'Reply case 1'},
                         {id: 6, text: 'Reply case 2'},
                     ], 
-                    selected: 6,
-                    sendAt: "234"
+                    selected: null,
+                    sendAt: null
                 },
-                { // ответ бота в будущем (не отображается, бот думает, последнее сообщение в чате - мой ответ из предыдущей секции)
+                /*{ // ответ бота в будущем (не отображается, бот думает, последнее сообщение в чате - мой ответ из предыдущей секции)
                     id: 3, 
                     reply: {
                         text: "bot reply 2",
@@ -96,6 +96,9 @@ class BotApi {
 
     async sendCase(botId, caseId, userData) {
         let showTime = new Date();
+        //showTime.setMinutes(showTime.getMinutes() + 1);
+        showTime.setSeconds(showTime.getSeconds() + 10);
+        console.debug('set showtime', showTime.toString());
         return {
             botId,
             caseId,
@@ -103,7 +106,7 @@ class BotApi {
             messageId: 33,
             reply: {
                 text: "Immediate reply text",
-                showAt: showTime.setMinutes(showTime.getMinutes() + 1)
+                showAt: showTime.toString()
             },
             cases: [
                 {id: 15, text: 'Immediate Reply case A'},
