@@ -18,18 +18,31 @@
     <v-content>
       <v-container fluid id="messages" ref="messagesContainer">
 
-        <Message text="first from me" :flag-is-owner="true" :send-at="new Date()"></Message>
-        <Message text="reply from bot" :send-at="new Date()"></Message>
-        <Message text="second from me" :flag-is-owner="true" :send-at="new Date()" :flag-is-last="true"></Message>
+        <template v-for="item in $store.getters.getBotMessages">
+          <Message 
+            :key="item.id" 
+            :text="item.text" 
+            :send-at="new Date(item.sendAt)" 
+            :photo="item.photo"
+            :flag-is-owner="item.flagIsOwner" 
+            :flag-is-last="item.id === $store.getters.getChatLastMessage.id"
+            ></Message>
+        </template>
 
       </v-container>
       
     </v-content>
-    <v-footer app>
-      <answer-panel :cases="answers" v-on:select="onSelectAnswerCase"></answer-panel>
+    <v-footer app v-if="$store.getters.getChatAnswerCases">
+      <answer-panel :cases="$store.getters.getChatAnswerCases" v-on:select="onSelectAnswerCase"></answer-panel>
     </v-footer>
 
-    <bot-info-dialog :flag-show="flagShowBotInfo" v-on:close="onCloseBotInfoDialog"></bot-info-dialog>
+    <bot-info-dialog 
+      :flag-show="flagShowBotInfo" 
+      :photo="$store.getters.getBotPhoto"
+      :info="$store.getters.getBotInfo"
+      :rate="$store.getters.getBotRate"
+      :gallery="$store.getters.getBotGallery"
+      v-on:close="onCloseBotInfoDialog"></bot-info-dialog>
     
   </v-app>
 </template>
@@ -44,22 +57,22 @@ export default {
     Message, BotInfoDialog, AnswerPanel
   },
   data: () => ({
-    flagShowBotInfo: false,
-    answers: [
-      {id: 1, text: 'Case 1'},
-      {id: 2, text: 'Case 2'},
-      {id: 3, text: 'Case 3'},
-    ],
-    messages: []
+    botId: null,
+    flagShowBotInfo: false
   }),
   mounted: function() {
-    this.$store
-      .dispatch("loadBot", { id: this.$router.currentRoute.params.id })
+    console.debug('this.$router.currentRoute.params', this.$router.currentRoute.params);
+    this.botId = this.$router.currentRoute.params.bot;
+    this.$store.dispatch("loadBot", { id: this.botId })
+      .then(this.$store.dispatch("loadChat", { botId: this.botId }))
       .then(() => {
-        setTimeout(() => {
-          this.$vuetify.goTo("#lastMsg");
-        }, 100);
+        if (document.querySelector("#lastMsg")) {
+          setTimeout(() => {
+            this.$vuetify.goTo("#lastMsg");
+          }, 100);
+        }
       });
+      
   },
   methods: {
     onClickHome: function() {
@@ -72,7 +85,10 @@ export default {
       this.flagShowBotInfo = false;
     },
     onSelectAnswerCase: function(answerCase) {
-      console.log('onSelectAnswerCase', answerCase);
+      this.$store.dispatch('selectCase', {
+        botId: this.botId,
+        caseId: answerCase.id
+      });
     }
   },
   computed: {

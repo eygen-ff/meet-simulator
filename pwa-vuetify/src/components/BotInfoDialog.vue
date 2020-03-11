@@ -23,7 +23,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="gallery.length > 0">
+          <v-row v-if="gallery">
             <v-col sm="4" xs="0"></v-col>
             <v-col sm="4" xs="12">
               <v-carousel v-if="gallery" height="300">

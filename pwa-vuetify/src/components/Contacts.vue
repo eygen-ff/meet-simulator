@@ -40,6 +40,9 @@ export default {
           ]
         }
     },
+    mounted: function() {
+      this.$store.dispatch('resetBot');
+    },
     methods: {
       onContactClick: function(item) {
         this.$router.push({ name: 'Chat', params: { bot: item.id } })

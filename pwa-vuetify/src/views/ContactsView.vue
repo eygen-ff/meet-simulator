@@ -67,6 +67,10 @@
       drawer: null
     }),
 
+    mounted: function() {
+      this.drawer = null;
+    },
+
     methods: {
       onClickMarket: function() {
         this.$router.push({ name: 'Market' })
