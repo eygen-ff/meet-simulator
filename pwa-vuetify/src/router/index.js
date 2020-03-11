@@ -1,13 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ContactsView from '../views/ContactsView.vue'
-
+import IntroView from '../views/IntroView.vue';
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
     name: 'Home',
+    component: IntroView
+  },
+  {
+    path: '/contacts',
+    name: 'Contacts',
     component: ContactsView
   },
   {

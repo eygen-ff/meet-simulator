@@ -114,6 +114,17 @@ class BotApi {
             ], 
         };
     }
+
+    async checkConnection() {
+        return true;
+    }
+
+    async checkAuth() {
+        return {
+            token: 'KLdfsdfklsdfkl',
+            email: 'asdas@dsdfsd.sdf'
+        }
+    }
 }
 
 export default new BotApi;
