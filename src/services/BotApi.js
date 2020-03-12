@@ -1,5 +1,9 @@
 'use strict';
 
+import axios from 'axios';
+const axiosConfig = {
+    headers: {'Access-Control-Allow-Origin': '*'}
+};
 
 const AppSettings = require('../../app-settings.json');
 
@@ -127,8 +131,19 @@ class BotApi {
         };
     }
 
-    async checkConnection() {
-        return true;
+    checkConnection() {
+        return new Promise((resolve) => {
+            axios.get(this.url, axiosConfig)
+                .then((response) => {
+                    console.debug('axios', response);
+                    resolve(response);
+                })
+                .catch();
+        });
+        
+        //const result = await axios.get(this.url);
+        //console.debug('checkConnection', result);
+        //return result;
     }
 
     async checkAuth() {

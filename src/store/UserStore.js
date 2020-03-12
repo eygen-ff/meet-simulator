@@ -27,11 +27,13 @@ const UserStore = {
         checkConnection: (state) => {
             return new Promise((resolve, reject) => {
                     BotApi.checkConnection()
-                        .then(() => {
+                        .then((result) => {
+                            console.debug('a.checkConnection', result);
                             state.commit('toggleConnection', true);
                             resolve();
                         })
-                        .catch(() => {
+                        .catch((err) => {
+                            console.debug('a.checkConnection err', err);
                             state.commit('toggleConnection', false);
                             reject();
                         });
