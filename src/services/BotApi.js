@@ -1,6 +1,18 @@
 'use strict';
 
+
+const AppSettings = require('../../app-settings.json');
+
 class BotApi {
+
+    constructor() {
+        if (process.env.NODE_ENV && process.env.NODE_ENV==='development') {
+            this.url = AppSettings.api_dev;
+        } else {
+            this.url = AppSettings.api;
+        }
+        console.debug('BotApi.url', this.url);
+    }
 
     /**
      * @param {Number} botId 
