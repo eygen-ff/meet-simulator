@@ -1,4 +1,4 @@
 {
-    "api": "https://effus-apis.herokuapp.com/datesimapi/1.0.0/",
-    "api_dev": "http://localhost:5000/datesimapi/1.0.0/"
+    "api": "https://effus-apis.herokuapp.com/datesimapi/1.0.0",
+    "api_dev": "http://localhost:5000/datesimapi/1.0.0"
 }

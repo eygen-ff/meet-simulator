@@ -6,6 +6,7 @@ import store from './store'
 import VueTimers from 'vue-timers';
 Vue.use(VueTimers);
 
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -29,8 +29,22 @@ export default {
       
     }
   },
-  mounted() {
-      this.$store.dispatch('checkConnection');
+  async mounted() {
+      try {
+        await this.$store.dispatch('checkConnection');
+        await this.$store.dispatch('checkAuth');
+      } catch (e) {
+        console.error('mounted error', e);
+        this.$router.push({ name: 'Auth' });
+      }
+      
+        // .then(() => {
+        //   //this.$router.push({ name: 'Contacts' });
+        //   console.error('mounted ok');
+        // })
+        // .catch((e) => {
+        //   console.error('mounted error', e);
+        // });
   },
   methods: {
       
@@ -39,8 +53,7 @@ export default {
     loadingStatusMessage: function() {
       if (this.$store.getters.isConnected === false) {
         return 'Ошибка соединения';
-      }
-      if (this.$store.getters.isAuthorized === false) {
+      } else if (this.$store.getters.isAuthorized === false) {
         return 'Ошибка авторизации';
       } else if (this.$store.getters.isAuthorized === null) {
         return 'Авторизация';

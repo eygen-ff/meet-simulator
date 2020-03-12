@@ -4,8 +4,8 @@ import axios from 'axios';
 const axiosConfig = {
     headers: {'Access-Control-Allow-Origin': '*'}
 };
-
 const AppSettings = require('../../app-settings.json');
+
 
 class BotApi {
 
@@ -15,6 +15,7 @@ class BotApi {
         } else {
             this.url = AppSettings.api;
         }
+        axios.defaults.baseURL = this.url;
         console.debug('BotApi.url', this.url);
     }
 
@@ -131,26 +132,45 @@ class BotApi {
         };
     }
 
-    checkConnection() {
-        return new Promise((resolve) => {
-            axios.get(this.url, axiosConfig)
-                .then((response) => {
-                    console.debug('axios', response);
-                    resolve(response);
-                })
-                .catch();
-        });
-        
-        //const result = await axios.get(this.url);
-        //console.debug('checkConnection', result);
-        //return result;
+    async checkConnection() {
+        const response = await axios.get('/', axiosConfig);
+        return response.data ? response.data.result : false;
     }
 
-    async checkAuth() {
-        return {
-            token: 'KLdfsdfklsdfkl',
-            email: 'asdas@dsdfsd.sdf'
+    async checkAuth(token, uid) {
+        if (!token || !uid) {
+            return false;
         }
+        const request = axios.create({
+            baseURL: this.url,
+            timeout: 5000,
+            headers: {'Authorization': 'token ' + uid + ':' + token}
+          });          
+        const response = await request.get('/user/me', axiosConfig);
+        console.debug('checkAuth', response);
+        return false;
+    }
+
+    async register(form) {
+        if (!form.email || !form.name || !form.password) {
+            throw Error('Some form fields is empty');
+        }
+        const response = await axios.put('/user/register', form);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.user;
+    }
+
+    async login(form) {
+        if (!form.email || !form.password) {
+            return false;
+        }
+        const response = await axios.post('/user/login', form);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data.user;
     }
 }
 
