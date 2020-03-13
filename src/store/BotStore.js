@@ -125,8 +125,43 @@ const BotStore = {
         isLoadingBotInfo: (state) => {
             return state.loadingInfo;
         },
-        getMyBots: (state) => {
-            return state.myBots;
+        getMyBots: () => {
+            //return state.myBots;
+            return [{
+                id: 1,
+                name: "Lia Okusawa",
+                photo: "demo-photos/girl-01.png",
+                status: 0,
+            },
+            {
+                id: 2,
+                name: "Kira Novotskaya",
+                photo: "demo-photos/girl-02.jpg",
+                status: 1
+            },
+            {
+                id: 3,
+                name: "Xxxxx",
+                photo: "demo-photos/girl-02.jpg",
+                status: 2
+            },
+            {
+                id: 4,
+                name: "Yyyyyy",
+                photo: "demo-photos/girl-02.jpg",
+                status: 3
+            }
+            ];
+        },
+        getMarketBots: () => {
+            return [
+                {
+                    id: 5,
+                    name: "Kufa Sufa",
+                    photo: "demo-photos/girl-01.png",
+                    price: 0
+                }
+            ];
         }
     },
     mutations: {

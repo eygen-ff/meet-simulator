@@ -6,22 +6,11 @@
       temporary
     >
       <v-list dense>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>apps</v-icon>
-          </v-list-item-action>
-          <v-list-item-content @click="onClickMarket">
-            <v-list-item-title>Bot Market</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>lock</v-icon>
-          </v-list-item-action>
-          <v-list-item-content @click="onClickLogout">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+
+        <side-bar-item icon="apps" text="Bot Market" v-on:click="onClickMarket"></side-bar-item>
+        <side-bar-item icon="mdi-plus-one" text="Create Bot" v-on:click="onClickCreateBot"></side-bar-item>
+        <side-bar-item icon="lock" text="Logout" v-on:click="onClickLogout"></side-bar-item>
+        
       </v-list>
     </v-navigation-drawer>
 
@@ -38,7 +27,7 @@
       
         <v-row align="start" justify="center">
           <v-col cols="12" class="text-left">
-            <contacts :list="$store.getMyBots"></contacts>     
+            <contacts :list="$store.getters.getMyBots"></contacts>     
           </v-col>
         </v-row>
       </v-container>
@@ -53,11 +42,12 @@
 
 <script>
   import Contacts from "../components/Contacts.vue"; 
+  import SideBarItem from '../components/SideBarItem.vue';
   import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
   export default {
     components: {
-        Contacts
+        Contacts, SideBarItem
     },
 
     props: {
@@ -79,6 +69,9 @@
         this.$store.dispatch('logout').then(() => {
           this.$router.push({ name: 'Home' })
         }).catch(console.error);
+      },
+      onClickCreateBot() {
+        this.$router.push({ name: 'CreateBot' })
       }
     }
   }

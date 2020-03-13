@@ -6,6 +6,7 @@ const UserStore = {
     state: {
         isConnected: null,
         authData: null,
+        permissions: null,
         token: null,
         uid: null,
         email: ''
@@ -17,6 +18,18 @@ const UserStore = {
         isAuthorized: (state) => {
             return state.authData !== false;
         },
+        isAllowBotList: (state) => {
+            return state.permissions && state.permissions.includes(21);
+        },
+        isAllowBotChat: (state) => {
+            return state.permissions && state.permissions.includes(22);
+        },
+        isAllowBotAdd: (state) => {
+            return state.permissions && state.permissions.includes(23);
+        },
+        isAllowBotCreate: (state) => {
+            return state.permissions && state.permissions.includes(24);
+        },
         getToken: (state) => {
             return state.token;
         },
@@ -25,6 +38,9 @@ const UserStore = {
         },
         getEmail: (state) => {
             return state.email;
+        },
+        getPermissions: (state) => {
+            return state.permissions;
         }
     },
     mutations: {
@@ -36,6 +52,7 @@ const UserStore = {
             if (payload && payload.id) {
                 state.uid = payload.id;
                 state.email = payload.email;
+                state.permissions = payload.permissions;
                 if (payload.token) {
                     state.token = payload.token;
                 }
@@ -43,6 +60,7 @@ const UserStore = {
                 state.uid = null;
                 state.email = '';
                 state.token = null;
+                state.permissions = null;
             }
         }
     },
