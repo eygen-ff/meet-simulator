@@ -1,20 +1,5 @@
 <template>
-
-<v-app id="inspire">
-    <v-app-bar
-      app
-      dark
-    >
-      <v-btn icon @click="onClickHome">
-        <v-icon>keyboard_backspace</v-icon>
-      </v-btn>
-      <v-toolbar-title> Create Bot</v-toolbar-title>
-    </v-app-bar>
-
-    <v-content>
-      <v-container fluid>
-
-<form>
+  <form>
     <v-text-field 
       v-model="form.name"
       :error-messages="errors.name"
@@ -37,33 +22,27 @@
     
     <v-row>
       <v-col>
-        <v-btn class="primary">Create</v-btn>
+        <v-btn class="primary" @click="onSubmit">{{ this.inputForm ? 'Update' : 'Create'}}</v-btn>
       </v-col>
     </v-row>
   
-  </form>
-
-      </v-container>
-    </v-content>
-    <v-footer
-      app
-    >
-      <span class="white--text">&copy; effus labs</span>
-    </v-footer>
-  </v-app>        
-    
+  </form>    
 </template>
 
 <script>
 export default {
     props: {
+        inputForm: {
+            type: Object,
+            default: () => {return null;}
+        }
     },
     data() {
         return {
             form: {
-                name: '',
-                photo: '',
-                gender: ''
+                name: this.inputForm ? this.inputForm.name : '',
+                photo: this.inputForm ? this.inputForm.photo : '',
+                gender: this.inputForm ? this.inputForm.gender : ''
             },
             errors: {
                 name: '',
@@ -74,15 +53,10 @@ export default {
             }
         }
     },
-    computed: {},
     methods: {
-        onClickHome: function() {
-            this.$router.push({name: 'Home'})
-        }
-    },
-};
+      onSubmit() {
+        this.$emit('submit', this.form);
+      }
+    }
+}
 </script>
-
-<style>
-
-</style>

@@ -67,7 +67,6 @@ export default {
     flagShowBotInfo: false
   }),
   mounted: function() {
-    console.debug('this.$router.currentRoute.params', this.$router.currentRoute.params);
     this.botId = this.$router.currentRoute.params.bot;
     this.$store.dispatch("loadBot", { id: this.botId })
       .then(this.$store.dispatch("loadMessages", { botId: this.botId }))

@@ -32,9 +32,14 @@ const routes = [
     component: () => import(/* webpackChunkName: "MarketView" */ '../views/MarketView.vue')
   },
   {
-    path: '/create-bot',
-    name: 'CreateBot',
-    component: () => import(/* webpackChunkName: "CreateBotView" */ '../views/CreateBotView.vue')
+    path: '/bot-editor',
+    name: 'BotEditor',
+    component: () => import(/* webpackChunkName: "BotEditorView" */ '../views/BotEditorView.vue')
+  },
+  {
+    path: '/bot-story-config',
+    name: 'BotStoryConfigurator',
+    component: () => import(/* webpackChunkName: "BotEditorView" */ '../views/BotStoryConfiguratorView.vue')
   }
 ]
 

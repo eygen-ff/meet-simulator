@@ -8,7 +8,7 @@
       <v-list dense>
 
         <side-bar-item icon="apps" text="Bot Market" v-on:click="onClickMarket"></side-bar-item>
-        <side-bar-item icon="mdi-plus-one" text="Create Bot" v-on:click="onClickCreateBot"></side-bar-item>
+        <side-bar-item icon="mdi-plus-one" text="Bot Editor" v-on:click="onClickBotEdit"></side-bar-item>
         <side-bar-item icon="lock" text="Logout" v-on:click="onClickLogout"></side-bar-item>
         
       </v-list>
@@ -70,8 +70,8 @@
           this.$router.push({ name: 'Home' })
         }).catch(console.error);
       },
-      onClickCreateBot() {
-        this.$router.push({ name: 'CreateBot' })
+      onClickBotEdit() {
+        this.$router.push({ name: 'BotEditor' })
       }
     }
   }
