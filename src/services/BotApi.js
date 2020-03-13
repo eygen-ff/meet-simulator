@@ -1,11 +1,16 @@
 'use strict';
 
 import axios from 'axios';
+import crypto from 'crypto';
+
 const axiosConfig = {
     headers: {'Access-Control-Allow-Origin': '*'}
 };
 const AppSettings = require('../../app-settings.json');
 
+const hashSomething = (str) => {
+    return crypto.createHash('sha256').update(str).digest('hex');
+}
 
 class BotApi {
 
@@ -132,23 +137,36 @@ class BotApi {
         };
     }
 
+    getAuthToken(token, uid) {
+        const timestamp = new Date().getTime();
+        return uid + ':' + timestamp + ':' + hashSomething(timestamp + token);
+    }
+
+    getAxiosAuth(token, uid) {
+        return axios.create({
+            baseURL: this.url,
+            timeout: 5000,
+            headers: {'Authorization': 'token ' + this.getAuthToken(token, uid)}
+        });
+    }
+
     async checkConnection() {
         const response = await axios.get('/', axiosConfig);
         return response.data ? response.data.result : false;
     }
 
     async checkAuth(token, uid) {
+        console.debug('BotApi.checkAuth', token, uid);
         if (!token || !uid) {
-            return false;
+            throw Error('Unauthorized');
         }
-        const request = axios.create({
-            baseURL: this.url,
-            timeout: 5000,
-            headers: {'Authorization': 'token ' + uid + ':' + token}
-          });          
-        const response = await request.get('/user/me', axiosConfig);
+        const response = await this.getAxiosAuth(token, uid).get('/user/me', axiosConfig);
         console.debug('checkAuth', response);
-        return false;
+        if (response && response.data && response.data.result) {
+            return response.data;
+        } else {
+            throw Error(response && response.data && response.data.message ? response.data.message : 'API result is false');
+        }
     }
 
     async register(form) {
@@ -159,18 +177,18 @@ class BotApi {
         if (!response.data || response.data.result === false) {
             throw Error(response.data.message ? response.data.message : 'API result is false');
         }
-        return response.user;
+        return response.data;
     }
 
     async login(form) {
         if (!form.email || !form.password) {
-            return false;
+            throw Error('Some form fields is empty');
         }
         const response = await axios.post('/user/login', form);
         if (!response.data || response.data.result === false) {
             throw Error(response.data.message ? response.data.message : 'API result is false');
         }
-        return response.data.user;
+        return response.data;
     }
 }
 

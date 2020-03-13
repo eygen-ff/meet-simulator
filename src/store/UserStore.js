@@ -32,45 +32,52 @@ const UserStore = {
             state.isConnected = flag;
         },
         setAuthData: (state, payload) => {
+            console.debug('mutations.setAuthData', payload);
             state.authData = payload;
-            state.uid = payload.id;
-            state.email = payload.email;
-            state.token = payload.token;
+            if (payload && payload.id) {
+                state.uid = payload.id;
+                state.email = payload.email;
+                if (payload.token) {
+                    state.token = payload.token;
+                }
+            }
         }
     },
     actions: {
         checkConnection: (state) => {
             return new Promise((resolve, reject) => {
-                    BotApi.checkConnection()
-                        .then((result) => {
-                            if (result === false) {
-                                throw Error('Connection test failed');
-                            }
-                            state.commit('toggleConnection', true);
-                            resolve();
-                        })
-                        .catch((err) => {
-                            console.debug('a.checkConnection err', err);
-                            state.commit('toggleConnection', false);
-                            reject();
-                        });
+                BotApi.checkConnection()
+                    .then((result) => {
+                        console.debug('checkConnection.response', result);
+                        if (result === false) {
+                            throw Error('Connection test failed');
+                        }
+                        state.commit('toggleConnection', true);
+                        resolve();
+                    })
+                    .catch((err) => {
+                        console.debug('a.checkConnection err', err);
+                        state.commit('toggleConnection', false);
+                        reject();
+                    });
             });
         },
         checkAuth: (state) => {
             return new Promise( (resolve, reject) => {
+                console.debug('store.checkAuth', state);
                 BotApi.checkAuth(state.getters.getToken, state.getters.getUid)
                     .then((payload) => {
-                        console.debug('checkAuth', payload);
-                        if ( !payload || payload.result === false ) {
+                        console.debug('checkAuth.response', payload);
+                        if ( payload.result === false ) {
                             state.commit('setAuthData', false);
                             return reject('Unauthorized');
                         }
                         state.commit('setAuthData', payload.user);
                         resolve();
                     })
-                    .catch(() => {
+                    .catch((e) => {
                         state.commit('setAuthData', false);
-                        reject();
+                        reject(e);
                     });
             });
         },
@@ -78,9 +85,15 @@ const UserStore = {
             return new Promise((resolve, reject) => {
                 BotApi.register(payload)
                     .then((response) => {
-                        console.debug('register', response);
-                        state.commit('setAuthData', response);
-                        resolve();
+                        console.debug('register.response', response);
+                        state.commit('setAuthData', response.user);
+                        if (response.result && response.user.id) {
+                            resolve();
+                        } else if (response.error) {
+                            reject(response.message);
+                        } else {
+                            reject('Ошибка протокола');
+                        }
                     })
                     .catch(reject);
             });
@@ -89,9 +102,15 @@ const UserStore = {
             return new Promise((resolve, reject) => {
                 BotApi.login(payload)
                     .then((response) => {
-                        console.debug('login', response);
-                        state.commit('setAuthData', response);
-                        resolve();
+                        console.debug('login.response', response);
+                        state.commit('setAuthData', response.user);
+                        if (response.result && response.user.id) {
+                            resolve();
+                        } else if (response.error) {
+                            reject(response.message);
+                        } else {
+                            reject('Ошибка протокола');
+                        }
                     })
                     .catch(reject);
             });

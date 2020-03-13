@@ -14,6 +14,22 @@
       </v-container>
     </v-content>
 
+    <v-snackbar
+      v-model="flagShowErrorMessage"
+      color="red darken-1"
+      :timeout="5000"
+    >
+      {{ errorMessage }}
+
+      <v-btn
+        color="black"
+        text
+        @click="flagShowErrorMessage = false"
+      >
+        <v-icon>mdi-close-thick</v-icon>
+      </v-btn>
+    </v-snackbar>
+
   </v-app>
 
 </template>
@@ -28,7 +44,8 @@ export default {
   },
   data() {
     return {
-      
+      flagShowErrorMessage: false,
+      errorMessage: ''
     }
   },
   async mounted() {
@@ -40,6 +57,8 @@ export default {
         this.$router.push({ name: 'Home' });
       } catch (e) {
         console.error('onSubmitRegister', e);
+        this.flagShowErrorMessage = true;
+        this.errorMessage = e;
       }
     },
     async onSubmitLogin(form) {
@@ -48,6 +67,8 @@ export default {
         this.$router.push({ name: 'Home' });
       } catch (e) {
         console.error('onSubmitLogin', e);
+        this.flagShowErrorMessage = true;
+        this.errorMessage = e;
       }
     }
   },

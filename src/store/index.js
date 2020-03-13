@@ -6,8 +6,9 @@ import UserStore from './UserStore.js';
 import createPersistedState from "vuex-persistedstate";
 
 export default new Vuex.Store({
+  
+  plugins: [createPersistedState()],
   modules: {
     BotStore, UserStore
-  },
-  plugins: [createPersistedState()]
+  }
 })

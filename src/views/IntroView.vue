@@ -30,21 +30,15 @@ export default {
     }
   },
   async mounted() {
-      try {
-        await this.$store.dispatch('checkConnection');
-        await this.$store.dispatch('checkAuth');
-      } catch (e) {
-        console.error('mounted error', e);
-        this.$router.push({ name: 'Auth' });
-      }
-      
-        // .then(() => {
-        //   //this.$router.push({ name: 'Contacts' });
-        //   console.error('mounted ok');
-        // })
-        // .catch((e) => {
-        //   console.error('mounted error', e);
-        // });
+    Promise.all([
+      this.$store.dispatch('checkConnection'),
+      this.$store.dispatch('checkAuth')
+    ]).then(() => {
+      this.$router.push({ name: 'Contacts' });
+    }).catch((e) => {
+      console.error('Loading error', e);
+      this.$router.push({ name: 'Auth' });
+    });
   },
   methods: {
       
