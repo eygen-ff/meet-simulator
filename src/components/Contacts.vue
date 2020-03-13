@@ -1,6 +1,6 @@
 <template>
   <v-list subheader>
-     <v-subheader>Online</v-subheader>
+    <v-subheader v-if="list.length">Online</v-subheader>
     <v-list-item
         v-for="item in list"
         :key="item.name"
@@ -18,6 +18,12 @@
           <v-icon :color="item.active ? 'deep-purple accent-4' : 'grey'">chat_bubble</v-icon>
         </v-list-item-icon>
     </v-list-item>
+
+    <v-list-item v-if="list.length === 0">
+      <v-list-item-content>
+          <v-list-item-title>Отсутствуют собеседники, посетите <router-link to="Market">BotMarket</router-link> </v-list-item-title>
+        </v-list-item-content>
+    </v-list-item>
   </v-list>
 </template>
 
@@ -27,7 +33,7 @@ export default {
         list: {
           type: Array,
           default: () => [
-              {
+              /*{
                   id: 1,
                   name: "Lia Okusawa",
                   photo: "demo-photos/girl-01.png"
@@ -36,7 +42,7 @@ export default {
                   id: 2,
                   name: "Kira Novotskaya",
                   photo: "demo-photos/girl-02.jpg"
-              }
+              }*/
           ]
         }
     },

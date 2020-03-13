@@ -18,7 +18,7 @@
           <v-list-item-action>
             <v-icon>lock</v-icon>
           </v-list-item-action>
-          <v-list-item-content>
+          <v-list-item-content @click="onClickLogout">
             <v-list-item-title>Logout</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -38,7 +38,7 @@
       
         <v-row align="start" justify="center">
           <v-col cols="12" class="text-left">
-            <contacts></contacts>     
+            <contacts :list="$store.getMyBots"></contacts>     
           </v-col>
         </v-row>
       </v-container>
@@ -72,8 +72,13 @@
     },
 
     methods: {
-      onClickMarket: function() {
+      onClickMarket() {
         this.$router.push({ name: 'Market' })
+      },
+      onClickLogout() {
+        this.$store.dispatch('logout').then(() => {
+          this.$router.push({ name: 'Home' })
+        }).catch(console.error);
       }
     }
   }

@@ -32,7 +32,6 @@ const UserStore = {
             state.isConnected = flag;
         },
         setAuthData: (state, payload) => {
-            console.debug('mutations.setAuthData', payload);
             state.authData = payload;
             if (payload && payload.id) {
                 state.uid = payload.id;
@@ -40,6 +39,10 @@ const UserStore = {
                 if (payload.token) {
                     state.token = payload.token;
                 }
+            } else {
+                state.uid = null;
+                state.email = '';
+                state.token = null;
             }
         }
     },
@@ -48,7 +51,6 @@ const UserStore = {
             return new Promise((resolve, reject) => {
                 BotApi.checkConnection()
                     .then((result) => {
-                        console.debug('checkConnection.response', result);
                         if (result === false) {
                             throw Error('Connection test failed');
                         }
@@ -56,7 +58,7 @@ const UserStore = {
                         resolve();
                     })
                     .catch((err) => {
-                        console.debug('a.checkConnection err', err);
+                        console.error('a.checkConnection err', err);
                         state.commit('toggleConnection', false);
                         reject();
                     });
@@ -64,10 +66,8 @@ const UserStore = {
         },
         checkAuth: (state) => {
             return new Promise( (resolve, reject) => {
-                console.debug('store.checkAuth', state);
                 BotApi.checkAuth(state.getters.getToken, state.getters.getUid)
                     .then((payload) => {
-                        console.debug('checkAuth.response', payload);
                         if ( payload.result === false ) {
                             state.commit('setAuthData', false);
                             return reject('Unauthorized');
@@ -85,7 +85,6 @@ const UserStore = {
             return new Promise((resolve, reject) => {
                 BotApi.register(payload)
                     .then((response) => {
-                        console.debug('register.response', response);
                         state.commit('setAuthData', response.user);
                         if (response.result && response.user.id) {
                             resolve();
@@ -102,7 +101,6 @@ const UserStore = {
             return new Promise((resolve, reject) => {
                 BotApi.login(payload)
                     .then((response) => {
-                        console.debug('login.response', response);
                         state.commit('setAuthData', response.user);
                         if (response.result && response.user.id) {
                             resolve();
@@ -113,6 +111,12 @@ const UserStore = {
                         }
                     })
                     .catch(reject);
+            });
+        },
+        logout: (state) => {
+            return new Promise((resolve) => {
+                state.commit('setAuthData', false);
+                resolve();
             });
         }
     }

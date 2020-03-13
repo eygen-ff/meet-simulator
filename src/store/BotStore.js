@@ -60,6 +60,7 @@ const BotStore = {
         chatState: null,
         lastMessage: null,
         loadingInfo: false,
+        myBots: [],
         isSendingCase: false
     },
     getters: {
@@ -123,6 +124,9 @@ const BotStore = {
         },
         isLoadingBotInfo: (state) => {
             return state.loadingInfo;
+        },
+        getMyBots: (state) => {
+            return state.myBots;
         }
     },
     mutations: {
@@ -210,6 +214,9 @@ const BotStore = {
         },
         setChatState: (state) => {
             state.chatState = chatStateHelper(state.lastMessage, state.isSendingCase);
+        },
+        setMyBots: (state, payload) => {
+            state.myBots = payload;
         }
     },
     actions: {
@@ -269,6 +276,23 @@ const BotStore = {
         renderChat: (state) => {
             state.commit('setChat');
             state.commit('setChatState');
+        },
+        loadMyBots: (state) => {
+            return new Promise((resolve, reject) => {
+                BotApi.getMyBots(state.getters.getToken, state.getters.getUid)
+                    .then((payload) => {
+                        if ( payload.result === false ) {
+                            state.commit('setMyBots', []);
+                            return reject('Fail to load bot list');
+                        }
+                        state.commit('setMyBots', payload.bots);
+                        resolve();
+                    })
+                    .catch((e) => {
+                        state.commit('setMyBots', []);
+                        reject(e);
+                    });
+            });
         }
     }
 };

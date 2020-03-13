@@ -35,8 +35,7 @@ export default {
       this.$store.dispatch('checkAuth')
     ]).then(() => {
       this.$router.push({ name: 'Contacts' });
-    }).catch((e) => {
-      console.error('Loading error', e);
+    }).catch(() => {
       this.$router.push({ name: 'Auth' });
     });
   },
