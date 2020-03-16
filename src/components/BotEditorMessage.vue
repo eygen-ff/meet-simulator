@@ -6,13 +6,13 @@
           
           <v-container fluid>
             <v-row >
-              <v-col class="px-0 py-0 mb-4" cols="10" sm="6" @click="onClickBotMessageEdit">
+              <v-col class="px-0 py-0 mb-4" cols="9" sm="6" @click="onClickBotMessageEdit">
                 <v-label class="mb-2">Bot message</v-label>
                 <v-card-text class="px-1 py-1 green darken-4 elevation-6">{{message}}</v-card-text>
               </v-col>
 
-              <v-col cols="2" sm="6" class="mt-2">
-                <v-btn @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
+              <v-col cols="3" sm="6" class="mt-2">
+                <v-btn class="px-1" @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
                 <v-btn @click="onClickBotMessageActions"><v-icon>mdi-message-settings-outline</v-icon></v-btn>
               </v-col>
 
@@ -98,13 +98,14 @@ export default {
     computed: {
       getNextItems() {
         let items = [];
-        items.push({title: 'Any', id: this.next.any, any:true});
+        items.push({title: 'Any', id: this.next.any, gt:0, any:true});
         if (!this.next.points) {
           return items;
         }
         for (let i in this.next.points) {
           items.push({
             title: '>' + i,
+            gt: i,
             id: this.next.points[i]
           });
         }

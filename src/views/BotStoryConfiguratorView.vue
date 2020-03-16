@@ -47,11 +47,15 @@
 
     <v-footer app  class="panel-open" v-if="actionToolbar.flagShow">
       <bot-editor-actions 
+        :current-id="currentMessage ? currentMessage.id : -1"
         :bot-message="actionToolbar.botMessage"
         :next-item="actionToolbar.nextItem"
         v-on:new-message="onBotActionNewMessage"
+        v-on:add-condition="onBotActionAddCondition"
         v-on:apply-bot-message="onBotActionApplyBotMessage"
         v-on:cancel-bot-message="onBotActionCancelBotMessage"
+        v-on:apply-next-item="onBotActionApplyNextItem"
+        v-on:cancel-next-item="onBotActionCancelNextItem"
       ></bot-editor-actions>
     </v-footer>
   </v-app>        
@@ -85,9 +89,26 @@ export default {
             next: {
               any: 2,
               points: {
-                10: 3,
-                15: 4
+                10: 3
               }
+            }
+          },
+          {
+            id: 2,
+            text: 'Wtf',
+            cases: [],
+            next: {
+              any: null,
+              points: {}
+            }
+          },
+          {
+            id: 3,
+            text: 'Last case',
+            cases: [],
+            next: {
+              any: null,
+              points: {}
             }
           }
         ],
@@ -102,6 +123,9 @@ export default {
   computed: {
     currentMessage() {
       return this.toggledMessage > -1 ? this.messages[this.toggledMessage] : null;
+    },
+    listMessageIds() {
+      return this.messages.map(value => '#'+value.id);
     }
   },
   methods: {
@@ -118,7 +142,12 @@ export default {
       },
       onEditNextItem: function(payload) {
         this.actionToolbar.flagShow = true;
-        this.actionToolbar.nextItem = payload;
+        this.actionToolbar.nextItem = {
+          id: payload.id,
+          gt: payload.gt,
+          any: payload.any,
+          list: this.listMessageIds
+        };
       },
       onEditCaseItem: function() {
         this.actionToolbar.flagShow = true;
@@ -142,6 +171,21 @@ export default {
           }
         });
         this.toggledMessage = this.messages.length-1;
+      },
+      onBotActionAddCondition() {
+        // this all is bad.. need condition id
+      },
+      onBotActionApplyNextItem(payload) {
+        console.debug('onBotActionApplyNextItem', payload);
+        if (payload.gt > 0) {
+          this.messages[this.toggledMessage].next.points[payload.gt] = payload.id;
+        } else {
+          this.messages[this.toggledMessage].next.any = payload.id;
+        }
+        this.actionToolbar.nextItem = null;
+      },
+      onBotActionCancelNextItem() {
+        this.actionToolbar.nextItem = null;
       }
   },
   watch: {
