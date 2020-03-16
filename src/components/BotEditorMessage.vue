@@ -4,13 +4,14 @@
         <!-- div class="overline mb-4">Фраза #12</div -->
         <v-card-text class="mb-1 px-2 py-1">
           
-          <v-container>
-            <v-row>
-              <v-col class="green darken-4" cols="9" @click="onClickBotMessageEdit">
-                {{message}}
+          <v-container fluid>
+            <v-row >
+              <v-col class="px-0 py-0 mb-4" cols="10" sm="6" @click="onClickBotMessageEdit">
+                <v-label class="mb-2">Bot message</v-label>
+                <v-card-text class="px-1 py-1 green darken-4 elevation-6">{{message}}</v-card-text>
               </v-col>
 
-              <v-col cols="3">
+              <v-col cols="2" sm="6" class="mt-2">
                 <v-btn @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
                 <v-btn @click="onClickBotMessageActions"><v-icon>mdi-message-settings-outline</v-icon></v-btn>
               </v-col>
@@ -19,17 +20,17 @@
 
             <!-- Next message definition -->
             <v-row>
-              <v-col class="px-0 py-0">
+              <v-col class="px-0 py-0 col-sm-6">
+                <v-label class="mb-1">Next message conditions</v-label>
 
-                <v-list>
-
-                  <v-list-item class="elevation-1 blue-grey darken-3" v-for="(item,i) in getNextItems" :key="i" @click="onClickNextItem(item)">
+                <v-list class="py-0">
+                  <v-list-item class="elevation-1 mb-1 blue-grey darken-3" v-for="(item,i) in getNextItems" :key="i" @click="onClickNextItem(item)">
                     <v-list-item-title>{{item.title}}</v-list-item-title>
-                    <v-list-item-subtitle class="col-3 py-1 my-0">
-                      <v-chip small label>#{{item.id}}</v-chip>
+                    <v-list-item-subtitle class="col-4 py-1 my-0">
+                      <v-btn>#{{item.id}}</v-btn>
                     </v-list-item-subtitle>
-                    <v-list-item-icon class="col-2 py-1 my-0 mt-1">
-                      <v-btn v-if="!item.any" fab dark x-small @click="onClickNextItem(item)"><v-icon dark>mdi-pencil</v-icon></v-btn>
+                    <v-list-item-icon class="col-2 py-1 my-0 mt-1 justify-end">
+                      <v-btn fab x-small><v-icon dark>mdi-pencil</v-icon></v-btn>
                     </v-list-item-icon>
                   </v-list-item>
                   
@@ -42,20 +43,25 @@
         </v-card-text>
    
     <!-- answer cases -->
+    <v-container fluid class="mt-0 pt-0 pb-0">
+    <v-row>
+      <v-col class="py-0 pl-2">
+        <v-label class="mb-1">Answer cases</v-label>
+      </v-col>
+    </v-row>
+    </v-container>
 
-    <v-card-actions class="px-1 py-1">
+    <v-card-actions class="px-0 py-0">
       
-      <v-list two-line dense class="py-0">
-        <v-list-item class="elevation-1 mb-1" v-for="(item,i) in cases" :key="i" @click="onClickCaseItem(item)">
-          <v-list-item-content class="grey darken-4">
+      <v-list dense class="py-0 px-2 col-sm-8" width="100%">
+        <v-list-item class="elevation-1 mb-1 blue-grey darken-4" v-for="(item,i) in cases" :key="i" @click="onClickCaseItem(item)">
+          <v-list-item-content class="">
             <v-list-item-title class="wrap">{{item.text}}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
+          <v-list-item-action class="pt-0">
               <v-list-item-action-text>
                 <v-chip small label class="mb-1" text-color="white">
-                  <v-icon v-if="item.points > 0">mdi-plus</v-icon> 
-                  <v-icon v-if="item.points < 0">mdi-minus</v-icon> 
-                  {{item.points}}
+                  {{item.points > 0 ? '+' + item.points : '-' + item.points}}
                 </v-chip>
               </v-list-item-action-text>
           </v-list-item-action>

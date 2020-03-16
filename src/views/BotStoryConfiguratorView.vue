@@ -1,6 +1,6 @@
 <template>
 
-<v-app id="inspire">
+<v-app id="configurator">
     <v-app-bar
       app
       dark
@@ -47,11 +47,11 @@
 
     <v-footer app  class="panel-open" v-if="actionToolbar.flagShow">
       <bot-editor-actions 
-        :mode="actionToolbar.mode" 
-        :message="currentMessage" 
-        :text="actionToolbar.text"
+        :bot-message="actionToolbar.botMessage"
+        :next-item="actionToolbar.nextItem"
         v-on:new-message="onBotActionNewMessage"
-        v-on:apply-message="onBotActionApplyMessage"
+        v-on:apply-bot-message="onBotActionApplyBotMessage"
+        v-on:cancel-bot-message="onBotActionCancelBotMessage"
       ></bot-editor-actions>
     </v-footer>
   </v-app>        
@@ -93,8 +93,8 @@ export default {
         ],
         actionToolbar: {
           flagShow: false,
-          mode: null,
-          text: null
+          botMessage: '',
+          nextItem: null
         },
         toggledMessage: -1
       }
@@ -110,28 +110,26 @@ export default {
       },
       onBotMessageAction: function() {
         this.actionToolbar.flagShow = true;
-        this.actionToolbar.mode = 'actions';
-        this.actionToolbar.text = null;
+        this.actionToolbar.botMessage = '';
       },
       onEditBotMessage: function() {
         this.actionToolbar.flagShow = true;
-        this.actionToolbar.mode = 'messageEdit';
-        this.actionToolbar.text = this.messages[this.toggledMessage].text;
+        this.actionToolbar.botMessage = this.messages[this.toggledMessage].text;
       },
-      onEditNextItem: function() {
+      onEditNextItem: function(payload) {
         this.actionToolbar.flagShow = true;
-        this.actionToolbar.mode = 'nextEdit';
+        this.actionToolbar.nextItem = payload;
       },
       onEditCaseItem: function() {
         this.actionToolbar.flagShow = true;
-        this.actionToolbar.mode = 'caseEdit';
       },
-      onBotActionApplyMessage: function(payload) {
-        console.debug('onBotActionApplyMessage', payload);
-        this.actionToolbar.mode = null;
-        this.actionToolbar.text = null;
-        this.$nextTick(() => {this.actionToolbar.flagShow = false;});
+      onBotActionApplyBotMessage: function(payload) {
+        console.debug('onBotActionApplyBotMessage', payload);
+        this.actionToolbar.botMessage = '';
         this.messages[this.toggledMessage].text = payload.text;
+      },
+      onBotActionCancelBotMessage: function() {
+        this.actionToolbar.botMessage = '';
       },
       onBotActionNewMessage() {
         this.messages.push({
@@ -170,5 +168,8 @@ export default {
   .v-expansion-panel-content__wrap {
     padding: 0.5rem;
   }
+}
+#configurator {
+  min-width: 300px;
 }
 </style>
