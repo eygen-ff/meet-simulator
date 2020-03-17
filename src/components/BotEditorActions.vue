@@ -1,12 +1,12 @@
 <template>
     <v-content class="py-0">
-        <v-row>
+        <v-row v-if="botMessage || nextItem">
             <v-col>
                 <v-card v-if="botMessage" class="mx-auto" outlined>
                     <v-card-title>Message editor</v-card-title>
                     <v-card-text>
                         <v-textarea
-                            label="Message"
+                            label="This is what bot says to user"
                             no-resize
                             rows="5"
                             v-model="tempText"
@@ -19,7 +19,7 @@
                         <v-container class="py-0">
                             <v-row>
                                 <v-col class="body-1 pt-1 pb-0">
-                                    Greater than
+                                    If user points greater than
                                 </v-col>
                                 <v-col cols="10" class="py-0">
                                     <v-slider
@@ -36,10 +36,10 @@
                             </v-row>
                             <v-row>
                                 <v-col class="body-1 pt-2 pb-0">
-                                    Next message
+                                    Bot will say this message
                                 </v-col>
                                 <v-col cols="10" class="py-0">
-                                    <v-combobox label="ID" v-model="tempComboId" :items="comboMessageList"></v-combobox>
+                                    <v-combobox label="Target message ID" v-model="tempComboId" :items="comboMessageList"></v-combobox>
                                 </v-col>
                             </v-row>
                             
@@ -60,6 +60,7 @@
                 <v-bottom-navigation v-if="nextItem">
                     <v-btn @click="onClickApplyNextItem" class="primary"><span>Apply</span><v-icon>mdi-check</v-icon></v-btn>
                     <v-btn @click="onClickCancelNextItem" class="secondary"><span>Cancel</span><v-icon>mdi-cancel</v-icon></v-btn>
+                    <v-btn v-if="nextItem.points > 0" @click="onClickDeleteNextItem" class="secondary"><span>Delete</span><v-icon>mdi-server-remove</v-icon></v-btn>
                 </v-bottom-navigation>  
 
                 <v-bottom-navigation v-else>
@@ -83,7 +84,7 @@
 export default {
     props: {
         currentId: {
-            type: Number,
+            type: String,
             default: -1
         },
         botMessage: {
@@ -123,6 +124,9 @@ export default {
         onClickApplyBotMessage() {
             const text = this.tempText;
             this.tempText = '';
+            if (!text) {
+                throw Error('Empty message text');
+            }
             this.$emit('apply-bot-message', {
                 text: text,
             });
@@ -140,6 +144,9 @@ export default {
             if (!goto) {
                 throw Error('Value not found');
             }
+            if (this.nextItem.points === 0) {
+                this.tempPoints = 0;
+            }
             this.$emit('apply-next-item', {
                 id: this.nextItem.id,
                 points: this.tempPoints,
@@ -148,6 +155,11 @@ export default {
         },
         onClickCancelNextItem() {
             this.$emit('cancel-next-item');
+        },
+        onClickDeleteNextItem() {
+            this.$emit('delete-next-item', {
+                id: this.nextItem.id,
+            });
         }
     },
     watch: {
@@ -169,7 +181,7 @@ export default {
     computed: {
         comboMessageList() {
             const list = this.nextItem.list.filter(value => {
-                if (value !== '#' + this.currentId) {
+                if (value.id !== this.currentId) {
                     return true;
                 }
             });

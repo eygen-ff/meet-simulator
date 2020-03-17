@@ -56,6 +56,7 @@
         v-on:cancel-bot-message="onBotActionCancelBotMessage"
         v-on:apply-next-item="onBotActionApplyNextItem"
         v-on:cancel-next-item="onBotActionCancelNextItem"
+        v-on:delete-next-item="onBotActionDeleteNextItem"
       ></bot-editor-actions>
     </v-footer>
   </v-app>        
@@ -74,7 +75,7 @@ export default {
       return {
         messages: [
           {
-            id: 1,
+            id: '111',
             text: 'Who we are? Angels or demons? Many points of obliviation or changing the respondius mistakes?',
             cases: [
               {
@@ -90,18 +91,6 @@ export default {
               {id:1, points: 0, goto:2},
               {id:2, points: 10, goto:3}
             ]
-          },
-          {
-            id: 2,
-            text: 'Wtf',
-            cases: [],
-            next: []
-          },
-          {
-            id: 3,
-            text: 'Last case',
-            cases: [],
-            next: []
           }
         ],
         actionToolbar: {
@@ -117,7 +106,7 @@ export default {
       return this.toggledMessage > -1 ? this.messages[this.toggledMessage] : null;
     },
     listMessageIds() {
-      return this.messages.map(value => '#'+value.id);
+      return this.messages.map(value => '#' + value.id + ' /' + value.text.substr(0,20) + ' ...');
     }
   },
   methods: {
@@ -153,15 +142,19 @@ export default {
       },
       onBotActionNewMessage() {
         this.messages.push({
-          id: new Date().getTime(),
-          text: '',
+          id: String(new Date().getTime()).substr(-5),
+          text: '?',
           cases: [],
-          next: [{id: new Date().getTime(), points: 0, goto: null}]
+          next: [{id: String(new Date().getTime()).substr(-5), points: 0, goto: null}]
         });
         this.toggledMessage = this.messages.length-1;
       },
+
       onBotActionAddCondition() {
-        let maxPoint = 1;
+        let maxPoint = 0;
+        if (this.messages[this.toggledMessage].next.length >= 6) {
+          throw Error('To many conditions');
+        }
         for (let i in this.messages[this.toggledMessage].next) {
           if (this.messages[this.toggledMessage].next[i].points > maxPoint) {
             maxPoint = this.messages[this.toggledMessage].next[i].points;
@@ -170,8 +163,9 @@ export default {
         if (maxPoint >= 100) {
           throw Error('Maximim value of points');
         }
-        this.messages[this.toggledMessage].next.push({id: new Date().getTime(), points: maxPoint+1, goto: null});
+        this.messages[this.toggledMessage].next.push({id: String(new Date().getTime()).substr(-5), points: maxPoint+1, goto: null});
       },
+
       onBotActionApplyNextItem(payload) {
         let existedPoints = [];
         for (let i in this.messages[this.toggledMessage].next) {
@@ -196,6 +190,14 @@ export default {
         this.actionToolbar.nextItem = null;
       },
       onBotActionCancelNextItem() {
+        this.actionToolbar.nextItem = null;
+      },
+      onBotActionDeleteNextItem(payload) {
+        for (let i in this.messages[this.toggledMessage].next) {
+          if (this.messages[this.toggledMessage].next[i].id === payload.id) {
+            this.messages[this.toggledMessage].next.splice(i, 1);
+          }
+        }
         this.actionToolbar.nextItem = null;
       }
   },

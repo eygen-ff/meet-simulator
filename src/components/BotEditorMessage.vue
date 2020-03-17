@@ -24,10 +24,10 @@
                 <v-label class="mb-1">Next message conditions</v-label>
 
                 <v-list class="py-0">
-                  
+
                   <v-list-item class="elevation-1 mb-1 blue-grey darken-3" v-for="(item,i) in this.next" 
                     :key="i" @click="onClickNextItem(item)">
-                    <v-list-item-title>{{item.points}}</v-list-item-title>
+                    <v-list-item-title> > {{item.points}}</v-list-item-title>
                     <v-list-item-subtitle class="col-4 py-1 my-0">
                       <v-btn v-if="item.goto">{{'#' + item.goto}}</v-btn>
                     </v-list-item-subtitle>
@@ -48,7 +48,7 @@
     <v-container fluid class="mt-0 pt-0 pb-0">
     <v-row>
       <v-col class="py-0 pl-2">
-        <v-label class="mb-1">Answer cases</v-label>
+        <v-label class="mb-1">User answer cases</v-label>
       </v-col>
     </v-row>
     </v-container>
@@ -78,7 +78,7 @@
 export default {
     props: {
       id: {
-        type: Number,
+        type: String,
         default: null
       },
       message: {
