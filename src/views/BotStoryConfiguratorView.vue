@@ -86,30 +86,22 @@ export default {
                 points: 1
               }
             ],
-            next: {
-              any: 2,
-              points: {
-                10: 3
-              }
-            }
+            next: [
+              {id:1, points: 0, goto:2},
+              {id:2, points: 10, goto:3}
+            ]
           },
           {
             id: 2,
             text: 'Wtf',
             cases: [],
-            next: {
-              any: null,
-              points: {}
-            }
+            next: []
           },
           {
             id: 3,
             text: 'Last case',
             cases: [],
-            next: {
-              any: null,
-              points: {}
-            }
+            next: []
           }
         ],
         actionToolbar: {
@@ -144,8 +136,8 @@ export default {
         this.actionToolbar.flagShow = true;
         this.actionToolbar.nextItem = {
           id: payload.id,
-          gt: payload.gt,
-          any: payload.any,
+          points: payload.points,
+          goto: payload.goto,
           list: this.listMessageIds
         };
       },
@@ -153,7 +145,6 @@ export default {
         this.actionToolbar.flagShow = true;
       },
       onBotActionApplyBotMessage: function(payload) {
-        console.debug('onBotActionApplyBotMessage', payload);
         this.actionToolbar.botMessage = '';
         this.messages[this.toggledMessage].text = payload.text;
       },
@@ -165,22 +156,42 @@ export default {
           id: new Date().getTime(),
           text: '',
           cases: [],
-          next: {
-            any: null,
-            points: []
-          }
+          next: [{id: new Date().getTime(), points: 0, goto: null}]
         });
         this.toggledMessage = this.messages.length-1;
       },
       onBotActionAddCondition() {
-        // this all is bad.. need condition id
+        let maxPoint = 1;
+        for (let i in this.messages[this.toggledMessage].next) {
+          if (this.messages[this.toggledMessage].next[i].points > maxPoint) {
+            maxPoint = this.messages[this.toggledMessage].next[i].points;
+          }
+        }
+        if (maxPoint >= 100) {
+          throw Error('Maximim value of points');
+        }
+        this.messages[this.toggledMessage].next.push({id: new Date().getTime(), points: maxPoint+1, goto: null});
       },
       onBotActionApplyNextItem(payload) {
-        console.debug('onBotActionApplyNextItem', payload);
-        if (payload.gt > 0) {
-          this.messages[this.toggledMessage].next.points[payload.gt] = payload.id;
-        } else {
-          this.messages[this.toggledMessage].next.any = payload.id;
+        let existedPoints = [];
+        for (let i in this.messages[this.toggledMessage].next) {
+          if (this.messages[this.toggledMessage].next[i].id === payload.id) {
+            continue;
+          }
+          if (!existedPoints.includes(this.messages[this.toggledMessage].next[i].points)) {
+            existedPoints.push(this.messages[this.toggledMessage].next[i].points);
+          }
+        }
+        for (let i in this.messages[this.toggledMessage].next) {
+          if (existedPoints.includes(payload.points)) {
+            throw Error('Points value already defined in this message');
+          }
+          if (!payload.goto) {
+            throw Error('No target message defined');
+          }
+          if (this.messages[this.toggledMessage].next[i].id === payload.id) {
+            this.$set(this.messages[this.toggledMessage].next, i, payload);
+          }
         }
         this.actionToolbar.nextItem = null;
       },

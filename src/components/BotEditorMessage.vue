@@ -24,10 +24,12 @@
                 <v-label class="mb-1">Next message conditions</v-label>
 
                 <v-list class="py-0">
-                  <v-list-item class="elevation-1 mb-1 blue-grey darken-3" v-for="(item,i) in getNextItems" :key="i" @click="onClickNextItem(item)">
-                    <v-list-item-title>{{item.title}}</v-list-item-title>
+                  
+                  <v-list-item class="elevation-1 mb-1 blue-grey darken-3" v-for="(item,i) in this.next" 
+                    :key="i" @click="onClickNextItem(item)">
+                    <v-list-item-title>{{item.points}}</v-list-item-title>
                     <v-list-item-subtitle class="col-4 py-1 my-0">
-                      <v-btn>#{{item.id}}</v-btn>
+                      <v-btn v-if="item.goto">{{'#' + item.goto}}</v-btn>
                     </v-list-item-subtitle>
                     <v-list-item-icon class="col-2 py-1 my-0 mt-1 justify-end">
                       <v-btn fab x-small><v-icon dark>mdi-pencil</v-icon></v-btn>
@@ -84,11 +86,8 @@ export default {
           default: ''
       },
       next: {
-        type: Object,
-        default: () => ({
-          any: null,
-          points: []
-        })
+        type: Array,
+        default: () => ([])
       },
       cases: {
         type: Array,
@@ -96,21 +95,7 @@ export default {
       }
     },
     computed: {
-      getNextItems() {
-        let items = [];
-        items.push({title: 'Any', id: this.next.any, gt:0, any:true});
-        if (!this.next.points) {
-          return items;
-        }
-        for (let i in this.next.points) {
-          items.push({
-            title: '>' + i,
-            gt: i,
-            id: this.next.points[i]
-          });
-        }
-        return items;
-      }
+      
     },
     methods: {
       onClickBotMessageActions() {

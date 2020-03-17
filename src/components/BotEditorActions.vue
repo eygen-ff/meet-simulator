@@ -27,7 +27,7 @@
                                         :disabled="flagFreezePoints"
                                         v-model="tempPoints"
                                         color="blue darken-4"
-                                        min="0"
+                                        min="1"
                                         max="100"
                                         step="1"
                                         :label="String(tempPoints)"
@@ -94,8 +94,8 @@ export default {
             type: Object,
             default: () => ({
                 id: -1,
-                gt: 0,
-                any: false,
+                points: 0,
+                goto: null,
                 list: []
             })
         }
@@ -133,9 +133,17 @@ export default {
         },
         // next item actions
         onClickApplyNextItem() {
+            if (!this.tempComboId) {
+                throw Error('Empty value for selected');
+            }
+            const goto = this.tempComboId.replace(/#/,'');
+            if (!goto) {
+                throw Error('Value not found');
+            }
             this.$emit('apply-next-item', {
-                gt: this.tempPoints,
-                id: this.tempComboId[0]
+                id: this.nextItem.id,
+                points: this.tempPoints,
+                goto: parseInt(goto)
             });
         },
         onClickCancelNextItem() {
@@ -148,10 +156,9 @@ export default {
         },
         "nextItem.id": function(value) {
             if (value) {
-                console.debug('nextItem.id', value);
-                this.tempPoints = this.nextItem.gt;
-                this.tempComboId = ['#' + this.nextItem.id];
-                this.flagFreezePoints = this.nextItem.any ? this.nextItem.any : false;
+                this.tempPoints = this.nextItem.points;
+                this.tempComboId = this.nextItem.goto ? '#' + this.nextItem.goto : null;
+                this.flagFreezePoints = !this.nextItem.points;
             } else {
                 this.tempPoints = 0;
                 this.tempComboId = null;
