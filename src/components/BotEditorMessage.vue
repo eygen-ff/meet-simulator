@@ -63,7 +63,7 @@
           <v-list-item-action class="pt-0">
               <v-list-item-action-text>
                 <v-chip small label class="mb-1" text-color="white">
-                  {{item.points > 0 ? '+' + item.points : '-' + item.points}}
+                  {{item.points > 0 ? '+' + item.points : (0 > item.points ? '+' + item.points : '0') }}
                 </v-chip>
               </v-list-item-action-text>
           </v-list-item-action>

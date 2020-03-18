@@ -50,13 +50,18 @@
         :current-id="currentMessage ? currentMessage.id : -1"
         :bot-message="actionToolbar.botMessage"
         :next-item="actionToolbar.nextItem"
+        :case-item="actionToolbar.caseItem"
         v-on:new-message="onBotActionNewMessage"
         v-on:add-condition="onBotActionAddCondition"
+        v-on:add-case="onBotActionAddCase"
         v-on:apply-bot-message="onBotActionApplyBotMessage"
         v-on:cancel-bot-message="onBotActionCancelBotMessage"
         v-on:apply-next-item="onBotActionApplyNextItem"
         v-on:cancel-next-item="onBotActionCancelNextItem"
         v-on:delete-next-item="onBotActionDeleteNextItem"
+        v-on:apply-case-item="onBotActionApplyCaseItem"
+        v-on:cancel-case-item="onBotActionCancelCaseItem"
+        v-on:delete-case-item="onBotActionDeleteCaseItem"
       ></bot-editor-actions>
     </v-footer>
   </v-app>        
@@ -79,10 +84,12 @@ export default {
             text: 'Who we are? Angels or demons? Many points of obliviation or changing the respondius mistakes?',
             cases: [
               {
+                id: 22,
                 text: 'There are no correct answer. I m just following my destiny',
                 points: 10
               },
               {
+                id: 33,
                 text: 'All is true',
                 points: 1
               }
@@ -96,7 +103,8 @@ export default {
         actionToolbar: {
           flagShow: false,
           botMessage: '',
-          nextItem: null
+          nextItem: null,
+          caseItem: null
         },
         toggledMessage: -1
       }
@@ -119,10 +127,14 @@ export default {
       },
       onEditBotMessage: function() {
         this.actionToolbar.flagShow = true;
+        this.actionToolbar.caseItem = null;
+        this.actionToolbar.nextItem = null;
         this.actionToolbar.botMessage = this.messages[this.toggledMessage].text;
       },
       onEditNextItem: function(payload) {
         this.actionToolbar.flagShow = true;
+        this.actionToolbar.caseItem = null;
+        this.actionToolbar.botMessage = '';
         this.actionToolbar.nextItem = {
           id: payload.id,
           points: payload.points,
@@ -130,8 +142,15 @@ export default {
           list: this.listMessageIds
         };
       },
-      onEditCaseItem: function() {
+      onEditCaseItem: function(payload) {
         this.actionToolbar.flagShow = true;
+        this.actionToolbar.nextItem = null;
+        this.actionToolbar.botMessage = '';
+        this.actionToolbar.caseItem = {
+          id: payload.id,
+          points: payload.points,
+          text: payload.text
+        };
       },
       onBotActionApplyBotMessage: function(payload) {
         this.actionToolbar.botMessage = '';
@@ -140,6 +159,7 @@ export default {
       onBotActionCancelBotMessage: function() {
         this.actionToolbar.botMessage = '';
       },
+
       onBotActionNewMessage() {
         this.messages.push({
           id: String(new Date().getTime()).substr(-5),
@@ -149,7 +169,6 @@ export default {
         });
         this.toggledMessage = this.messages.length-1;
       },
-
       onBotActionAddCondition() {
         let maxPoint = 0;
         if (this.messages[this.toggledMessage].next.length >= 6) {
@@ -164,6 +183,12 @@ export default {
           throw Error('Maximim value of points');
         }
         this.messages[this.toggledMessage].next.push({id: String(new Date().getTime()).substr(-5), points: maxPoint+1, goto: null});
+      },
+      onBotActionAddCase() {
+        if (this.messages[this.toggledMessage].cases.length >= 6) {
+          throw Error('To many cases');
+        }
+        this.messages[this.toggledMessage].cases.push({id: String(new Date().getTime()).substr(-5), points: 0, text: ''});
       },
 
       onBotActionApplyNextItem(payload) {
@@ -199,7 +224,27 @@ export default {
           }
         }
         this.actionToolbar.nextItem = null;
-      }
+      },
+
+      onBotActionApplyCaseItem(payload) {
+        this.actionToolbar.caseItem = null;
+        for (let i in this.messages[this.toggledMessage].cases) {
+          if (this.messages[this.toggledMessage].cases[i].id === payload.id) {
+            this.$set(this.messages[this.toggledMessage].cases, i, payload);
+          }
+        }
+      },
+      onBotActionCancelCaseItem() {
+        this.actionToolbar.caseItem = null;
+      },
+      onBotActionDeleteCaseItem(payload) {
+        for (let i in this.messages[this.toggledMessage].cases) {
+          if (this.messages[this.toggledMessage].cases[i].id === payload.id) {
+            this.messages[this.toggledMessage].cases.splice(i, 1);
+          }
+        }
+        this.actionToolbar.caseItem = null;
+      },
   },
   watch: {
     toggledMessage(value) {

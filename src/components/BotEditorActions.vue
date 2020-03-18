@@ -1,6 +1,6 @@
 <template>
     <v-content class="py-0">
-        <v-row v-if="botMessage || nextItem">
+        <v-row v-if="botMessage || nextItem || caseItem">
             <v-col>
                 <v-card v-if="botMessage" class="mx-auto" outlined>
                     <v-card-title>Message editor</v-card-title>
@@ -8,11 +8,13 @@
                         <v-textarea
                             label="This is what bot says to user"
                             no-resize
+                            outlined
                             rows="5"
                             v-model="tempText"
                             ></v-textarea>
                     </v-card-text>
                 </v-card>
+                
                 <v-card v-if="nextItem" class="mx-auto py-0" outlined>
                     <v-card-title>Next message condition</v-card-title>
                     <v-card-text>
@@ -21,7 +23,7 @@
                                 <v-col class="body-1 pt-1 pb-0">
                                     If user points greater than
                                 </v-col>
-                                <v-col cols="10" class="py-0">
+                                <v-col cols="12" class="py-0">
                                     <v-slider
                                         dense
                                         :disabled="flagFreezePoints"
@@ -38,8 +40,47 @@
                                 <v-col class="body-1 pt-2 pb-0">
                                     Bot will say this message
                                 </v-col>
-                                <v-col cols="10" class="py-0">
+                                <v-col cols="12" class="py-0">
                                     <v-combobox label="Target message ID" v-model="tempComboId" :items="comboMessageList"></v-combobox>
+                                </v-col>
+                            </v-row>
+                            
+                        </v-container>
+                        
+                    </v-card-text>
+                </v-card>
+
+                <v-card v-if="caseItem" class="mx-auto py-0" outlined>
+                    <v-card-title class="py-1">Answer case</v-card-title>
+                    <v-card-text>
+                        <v-container class="py-0">
+                            <v-row>
+                                <v-col class="body-1 pt-1 pb-0">
+                                    Points for answer
+                                </v-col>
+                                <v-col cols="12" class="py-0">
+                                    <v-slider
+                                        dense
+                                        v-model="tempPoints"
+                                        color="blue darken-4"
+                                        min="-10"
+                                        max="10"
+                                        step="1"
+                                        :label="String(tempPoints)"
+                                    ></v-slider>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col class="body-1 pt-2 pb-0">
+                                    User message
+                                </v-col>
+                                <v-col cols="12" class="py-0">
+                                    <v-textarea
+                                        outlined
+                                        no-resize
+                                        rows="2"
+                                        v-model="tempText"
+                                        ></v-textarea>
                                 </v-col>
                             </v-row>
                             
@@ -61,14 +102,20 @@
                     <v-btn @click="onClickApplyNextItem" class="primary"><span>Apply</span><v-icon>mdi-check</v-icon></v-btn>
                     <v-btn @click="onClickCancelNextItem" class="secondary"><span>Cancel</span><v-icon>mdi-cancel</v-icon></v-btn>
                     <v-btn v-if="nextItem.points > 0" @click="onClickDeleteNextItem" class="secondary"><span>Delete</span><v-icon>mdi-server-remove</v-icon></v-btn>
-                </v-bottom-navigation>  
+                </v-bottom-navigation>
+
+                <v-bottom-navigation v-if="caseItem">
+                    <v-btn @click="onClickApplyCaseItem" class="primary"><span>Apply</span><v-icon>mdi-check</v-icon></v-btn>
+                    <v-btn @click="onClickCancelCaseItem" class="secondary"><span>Cancel</span><v-icon>mdi-cancel</v-icon></v-btn>
+                    <v-btn @click="onClickDeleteCaseItem" class="secondary"><span>Delete</span><v-icon>mdi-server-remove</v-icon></v-btn>
+                </v-bottom-navigation>
 
                 <v-bottom-navigation v-else>
 
                     <v-btn class="px-0" @click="onClickNewMessage"><span>New</span><v-icon>mdi-beaker-plus-outline</v-icon></v-btn>
                     <v-btn class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
                     <v-btn class="px-0" @click="onClickAddCondition"><span>Add condition</span><v-icon>mdi-help-network-outline</v-icon></v-btn>
-                    <v-btn class="px-0"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
+                    <v-btn class="px-0" @click="onClickAddCase"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
                     <v-btn class="px-0"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
 
                 </v-bottom-navigation>  
@@ -99,6 +146,14 @@ export default {
                 goto: null,
                 list: []
             })
+        },
+        caseItem: {
+            type: Object,
+            default: () => ({
+                id: -1,
+                points: 0,
+                text: null
+            })
         }
     },
     data() {
@@ -119,6 +174,9 @@ export default {
         },
         onClickAddCondition() {
             this.$emit('add-condition');
+        },
+        onClickAddCase() {
+            this.$emit('add-case');
         },
         // bot message actions
         onClickApplyBotMessage() {
@@ -160,6 +218,24 @@ export default {
             this.$emit('delete-next-item', {
                 id: this.nextItem.id,
             });
+        },
+        onClickApplyCaseItem() {
+            if (!this.tempText) {
+                throw Error('Message is empty');
+            }
+            this.$emit('apply-case-item', {
+                id: this.caseItem.id,
+                points: this.tempPoints,
+                text: this.tempText
+            });
+        },
+        onClickCancelCaseItem() {
+            this.$emit('cancel-case-item');
+        },
+        onClickDeleteCaseItem() {
+            this.$emit('delete-case-item', {
+                id: this.caseItem.id,
+            });
         }
     },
     watch: {
@@ -175,6 +251,16 @@ export default {
                 this.tempPoints = 0;
                 this.tempComboId = null;
                 this.flagFreezePoints = true;
+            }
+        },
+        "caseItem.id": function(value) {
+            console.debug('caseItem.id', value);
+            if (value) {
+                this.tempPoints = this.caseItem.points;
+                this.tempText = this.caseItem.text;
+            } else {
+                this.tempPoints = 0;
+                this.tempText = '';
             }
         }
     },
