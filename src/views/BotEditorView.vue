@@ -46,7 +46,7 @@
                   <v-btn small @click="onClickBotCreate" class="mb-1">
                     <v-icon class="mr-1">mdi-pencil-outline</v-icon> edit
                   </v-btn>
-                  <v-btn small @click="onBotConfig" class="mb-1">
+                  <v-btn small @click="onBotConfig(item)" class="mb-1">
                     <v-icon class="mr-1">mdi-graph</v-icon> story
                   </v-btn>
                   <v-btn small>
@@ -92,8 +92,8 @@ export default {
       onBotEditFormSubmit() {
         this.flagShowForm = false;
       },
-      onBotConfig() {
-        this.$router.push({name: 'BotStoryConfigurator'})
+      onBotConfig(bot) {
+        this.$router.push({name: 'BotStoryConfigurator', params: { bot: bot.id }})
       }
   }
 };

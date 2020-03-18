@@ -113,10 +113,13 @@
                 <v-bottom-navigation v-else>
 
                     <v-btn class="px-0" @click="onClickNewMessage"><span>New</span><v-icon>mdi-beaker-plus-outline</v-icon></v-btn>
-                    <v-btn class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
-                    <v-btn class="px-0" @click="onClickAddCondition"><span>Add condition</span><v-icon>mdi-help-network-outline</v-icon></v-btn>
-                    <v-btn class="px-0" @click="onClickAddCase"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
-                    <v-btn class="px-0"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
+
+                    <template v-if="currentId">
+                        <v-btn class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
+                        <v-btn class="px-0" @click="onClickAddCondition"><span>Add condition</span><v-icon>mdi-help-network-outline</v-icon></v-btn>
+                        <v-btn class="px-0" @click="onClickAddCase"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
+                        <v-btn class="px-0" @click="onClickSave"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
+                    </template>
 
                 </v-bottom-navigation>  
 
@@ -132,7 +135,7 @@ export default {
     props: {
         currentId: {
             type: String,
-            default: -1
+            default: ''
         },
         botMessage: {
             type: String,
@@ -236,6 +239,9 @@ export default {
             this.$emit('delete-case-item', {
                 id: this.caseItem.id,
             });
+        },
+        onClickSave() {
+            this.$emit('save');
         }
     },
     watch: {

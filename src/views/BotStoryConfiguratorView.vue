@@ -45,9 +45,9 @@
   
     </v-content>
 
-    <v-footer app  class="panel-open" v-if="actionToolbar.flagShow">
+    <v-footer app  class="panel-open">
       <bot-editor-actions 
-        :current-id="currentMessage ? currentMessage.id : -1"
+        :current-id="currentMessage ? currentMessage.id : ''"
         :bot-message="actionToolbar.botMessage"
         :next-item="actionToolbar.nextItem"
         :case-item="actionToolbar.caseItem"
@@ -62,6 +62,7 @@
         v-on:apply-case-item="onBotActionApplyCaseItem"
         v-on:cancel-case-item="onBotActionCancelCaseItem"
         v-on:delete-case-item="onBotActionDeleteCaseItem"
+        v-on:save="onClickSave"
       ></bot-editor-actions>
     </v-footer>
   </v-app>        
@@ -74,11 +75,12 @@ import BotEditorActions from '../components/BotEditorActions.vue';
 
 export default {
   components: {BotEditorMessage, BotEditorActions},
-  props: {
-  },
   data() {
       return {
+        botId: null,
         messages: [
+          /*
+          // sample
           {
             id: '111',
             text: 'Who we are? Angels or demons? Many points of obliviation or changing the respondius mistakes?',
@@ -98,10 +100,9 @@ export default {
               {id:1, points: 0, goto:2},
               {id:2, points: 10, goto:3}
             ]
-          }
+          }*/
         ],
         actionToolbar: {
-          flagShow: false,
           botMessage: '',
           nextItem: null,
           caseItem: null
@@ -117,22 +118,22 @@ export default {
       return this.messages.map(value => '#' + value.id + ' /' + value.text.substr(0,20) + ' ...');
     }
   },
+  mounted() {
+    this.botId = this.$router.currentRoute.params.bot;
+  },
   methods: {
       onClickBotEdit: function() {
           this.$router.push({name: 'BotEditor'})
       },
       onBotMessageAction: function() {
-        this.actionToolbar.flagShow = true;
         this.actionToolbar.botMessage = '';
       },
       onEditBotMessage: function() {
-        this.actionToolbar.flagShow = true;
         this.actionToolbar.caseItem = null;
         this.actionToolbar.nextItem = null;
         this.actionToolbar.botMessage = this.messages[this.toggledMessage].text;
       },
       onEditNextItem: function(payload) {
-        this.actionToolbar.flagShow = true;
         this.actionToolbar.caseItem = null;
         this.actionToolbar.botMessage = '';
         this.actionToolbar.nextItem = {
@@ -143,7 +144,6 @@ export default {
         };
       },
       onEditCaseItem: function(payload) {
-        this.actionToolbar.flagShow = true;
         this.actionToolbar.nextItem = null;
         this.actionToolbar.botMessage = '';
         this.actionToolbar.caseItem = {
@@ -245,14 +245,21 @@ export default {
         }
         this.actionToolbar.caseItem = null;
       },
+      onClickSave() {
+        this.$store.dispatch('saveBotMessages', {
+          botId: this.botId,
+          messages: this.messages
+        })
+          .then(() => {
+            this.$router.push({name: 'BotEditor'})
+          })
+          .catch(console.log);
+      }
   },
   watch: {
     toggledMessage(value) {
       if (value > -1) {
-        this.actionToolbar.flagShow = true;
         this.actionToolbar.mode = 'actions';
-      } else {
-        this.actionToolbar.flagShow = false;
       }
     }
   }

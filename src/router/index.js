@@ -37,7 +37,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "BotEditorView" */ '../views/BotEditorView.vue')
   },
   {
-    path: '/bot-story-config',
+    path: '/bot-story-config/:bot',
     name: 'BotStoryConfigurator',
     component: () => import(/* webpackChunkName: "BotEditorView" */ '../views/BotStoryConfiguratorView.vue')
   }

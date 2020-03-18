@@ -328,6 +328,22 @@ const BotStore = {
                         reject(e);
                     });
             });
+        },
+        saveBotMessages(state, payload) {
+            return new Promise((resolve, reject) => {
+                BotApi.saveBotMessagesConfig(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.botId,
+                    payload.messages
+                )
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
         }
     }
 };

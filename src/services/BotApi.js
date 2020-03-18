@@ -190,6 +190,23 @@ class BotApi {
         }
         return response.data;
     }
+
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
+     * @param {*} messages 
+     */
+    async saveBotMessagesConfig(token, uid, botId, messages) {
+        if (!token || !uid) {
+            throw Error('Unauthorized');
+        }
+        const response = await this.getAxiosAuth(token, uid).post('/bot/config/messages', {
+            id: botId,
+            messages: messages
+        });
+        return response;
+    }
 }
 
 export default new BotApi;
