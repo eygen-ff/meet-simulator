@@ -143,6 +143,9 @@ class BotApi {
     }
 
     getAxiosAuth(token, uid) {
+        if (!token || !uid) {
+            throw Error('Unauthorized');
+        }
         return axios.create({
             baseURL: this.url,
             timeout: 5000,
@@ -192,15 +195,66 @@ class BotApi {
     }
 
     /**
+     * Боты, которых я создал
+     * @param {*} token 
+     * @param {*} uid 
+     */
+    async getMyOwnBots(token, uid) {
+        const response = await this.getAxiosAuth(token, uid).get('/bots/own');
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    async getMyBots(token, uid) {
+        const response = await this.getAxiosAuth(token, uid).get('/bots/');
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    async getBotMessages(token, uid, botId) {
+        const response = await this.getAxiosAuth(token, uid).get('/bot/' + botId);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    async createBot(token, uid, name, gender, photo) {
+        const response = await this.getAxiosAuth(token, uid).put('/bot/', {
+            name: name,
+            gender: gender,
+            photo: photo
+        });
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    async updateBot(token, uid, botId, name, gender, photo) {
+        const response = await this.getAxiosAuth(token, uid).post('/bot/', {
+            id: botId,
+            name: name,
+            gender: gender,
+            photo: photo
+        });
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    /**
      * @param {*} token 
      * @param {*} uid 
      * @param {*} botId 
      * @param {*} messages 
      */
     async saveBotMessagesConfig(token, uid, botId, messages) {
-        if (!token || !uid) {
-            throw Error('Unauthorized');
-        }
         const response = await this.getAxiosAuth(token, uid).post('/bot/config/messages', {
             id: botId,
             messages: messages

@@ -61,6 +61,7 @@ const BotStore = {
         lastMessage: null,
         loadingInfo: false,
         myBots: [],
+        myOwnBots: [],
         isSendingCase: false
     },
     getters: {
@@ -125,9 +126,9 @@ const BotStore = {
         isLoadingBotInfo: (state) => {
             return state.loadingInfo;
         },
-        getMyBots: () => {
-            //return state.myBots;
-            return [{
+        getMyBots: (state) => {
+            return state.myBots;
+            /*return [{
                 id: 1,
                 name: "Lia Okusawa",
                 photo: "demo-photos/girl-01.png",
@@ -151,7 +152,10 @@ const BotStore = {
                 photo: "demo-photos/girl-02.jpg",
                 status: 3
             }
-            ];
+            ];*/
+        },
+        getMyOwnBots: (state) => {
+            return state.myOwnBots;
         },
         getMarketBots: () => {
             return [
@@ -252,6 +256,9 @@ const BotStore = {
         },
         setMyBots: (state, payload) => {
             state.myBots = payload;
+        },
+        setMyOwnBots: (state, payload) => {
+            state.myOwnBots = payload;
         }
     },
     actions: {
@@ -312,6 +319,10 @@ const BotStore = {
             state.commit('setChat');
             state.commit('setChatState');
         },
+
+        /**
+         * Созданные мной боты
+         */
         loadMyBots: (state) => {
             return new Promise((resolve, reject) => {
                 BotApi.getMyBots(state.getters.getToken, state.getters.getUid)
@@ -329,6 +340,57 @@ const BotStore = {
                     });
             });
         },
+        loadMyOwnBots: (state) => {
+            return new Promise((resolve, reject) => {
+                BotApi.getMyOwnBots(state.getters.getToken, state.getters.getUid)
+                    .then((payload) => {
+                        if ( payload.result === false ) {
+                            state.commit('loadMyOwnBots', []);
+                            return reject('Fail to load bot list');
+                        }
+                        state.commit('setMyOwnBots', payload.bots);
+                        resolve();
+                    })
+                    .catch((e) => {
+                        state.commit('setMyOwnBots', []);
+                        reject(e);
+                    });
+            });
+        },
+        getMyBotMessages: (state, payload) => {
+            return new Promise((resolve, reject) => {
+                BotApi.getBotMessages(state.getters.getToken, state.getters.getUid, payload.botId)
+                    .then((payload) => {
+                        if ( payload.result === false ) {
+                            state.commit('loadMyBotMesages', []);
+                            return reject('Fail to load bot list');
+                        }
+                        resolve(payload.bot);
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
+        },
+        createBot: (state, payload) => {
+            return new Promise((resolve, reject) => {
+                BotApi.createBot(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.name,
+                    payload.gender,
+                    payload.photo
+                ).then((response) => {
+                    if (response.result === false) {
+                        throw Error(response.error ? response.error : 'Fail to create bot');
+                    }
+                    resolve(response.bot);
+                }).catch((e) => {
+                    reject(e);
+                });
+            });
+        },
+
         saveBotMessages(state, payload) {
             return new Promise((resolve, reject) => {
                 BotApi.saveBotMessagesConfig(
@@ -345,6 +407,8 @@ const BotStore = {
                     });
             });
         }
+
+
     }
 };
 

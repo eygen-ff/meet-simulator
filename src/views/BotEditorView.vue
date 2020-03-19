@@ -26,10 +26,10 @@
           </v-col>
         </v-row>
 
-        <v-list subheader>
-            <v-subheader v-if="bots.length">My Bots</v-subheader>
+        <v-list subheader v-if="$store.getters.getMyOwnBots.length">
+            <v-subheader>My Bots</v-subheader>
 
-            <v-list-item v-for="item in bots" :key="item.name">
+            <v-list-item v-for="item in $store.getters.getMyOwnBots" :key="item.name">
                 <v-list-item-avatar>
                   <v-img v-if="item.photo" :src="item.photo"></v-img>
                 </v-list-item-avatar>
@@ -75,12 +75,15 @@ export default {
   data() {
       return {
         flagShowForm: false,
-        bots: [
-          {id: 1, name: 'My bot 1', chatItemsCount: 56, dialogsCount: 0, price: 0, medianProgress: 78}
-        ]
+        //bots: [
+          //{id: 1, name: 'My bot 1', chatItemsCount: 56, dialogsCount: 0, price: 0, medianProgress: 78}
+        //]
       }
   },
   computed: {},
+  mounted() {
+    this.$store.dispatch('loadMyOwnBots');
+  },
   methods: {
       onClickHome() {
         this.$router.push({name: 'Home'})
@@ -88,9 +91,15 @@ export default {
       onClickBotCreate() {
         this.flagShowForm = true;
         //this.$router.push({name: 'BotConfig'})
+
       },
-      onBotEditFormSubmit() {
-        this.flagShowForm = false;
+      onBotEditFormSubmit(payload) {
+        this.$store.dispatch('createBot', payload)
+          .then(() => {
+            this.flagShowForm = false;
+            this.$store.dispatch('loadMyOwnBots');
+          })
+          .catch(console.error);
       },
       onBotConfig(bot) {
         this.$router.push({name: 'BotStoryConfigurator', params: { bot: bot.id }})

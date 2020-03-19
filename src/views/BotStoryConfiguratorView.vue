@@ -120,6 +120,11 @@ export default {
   },
   mounted() {
     this.botId = this.$router.currentRoute.params.bot;
+    this.$store.dispatch('getMyBotMessages', {botId: this.botId}).then((bot) => {
+      if (bot) {
+        this.messages = bot.messages;
+      }
+    });
   },
   methods: {
       onClickBotEdit: function() {
