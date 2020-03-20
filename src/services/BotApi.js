@@ -254,12 +254,25 @@ class BotApi {
      * @param {*} botId 
      * @param {*} messages 
      */
-    async saveBotMessagesConfig(token, uid, botId, messages) {
-        const response = await this.getAxiosAuth(token, uid).post('/bot/config/messages', {
-            id: botId,
+    async saveOwnBotMessages(token, uid, botId, messages) {
+        const response = await this.getAxiosAuth(token, uid).post('/bot/own/' + botId + '/messages', {
             messages: messages
         });
         return response;
+    }
+    
+    /**
+     * 
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
+     */
+    async getMyOwnBot(token, uid, botId) {
+        const response = await this.getAxiosAuth(token, uid).get('/bot/own/' + botId);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
+        return response.data;
     }
 }
 

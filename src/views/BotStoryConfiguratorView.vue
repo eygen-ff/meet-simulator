@@ -78,30 +78,7 @@ export default {
   data() {
       return {
         botId: null,
-        messages: [
-          /*
-          // sample
-          {
-            id: '111',
-            text: 'Who we are? Angels or demons? Many points of obliviation or changing the respondius mistakes?',
-            cases: [
-              {
-                id: 22,
-                text: 'There are no correct answer. I m just following my destiny',
-                points: 10
-              },
-              {
-                id: 33,
-                text: 'All is true',
-                points: 1
-              }
-            ],
-            next: [
-              {id:1, points: 0, goto:2},
-              {id:2, points: 10, goto:3}
-            ]
-          }*/
-        ],
+        messages: [],
         actionToolbar: {
           botMessage: '',
           nextItem: null,
@@ -120,13 +97,16 @@ export default {
   },
   mounted() {
     this.botId = this.$router.currentRoute.params.bot;
-    this.$store.dispatch('getMyBotMessages', {botId: this.botId}).then((bot) => {
-      if (bot) {
-        this.messages = bot.messages;
-      }
-    });
+    this.loadMyOwnBotMessage();
   },
   methods: {
+      loadMyOwnBotMessage() {
+        this.$store.dispatch('getMyOwnBotMessages', {botId: this.botId}).then((bot) => {
+          if (bot.messages) {
+            this.messages = bot.messages ? bot.messages : [];
+          }
+        });
+      },
       onClickBotEdit: function() {
           this.$router.push({name: 'BotEditor'})
       },
@@ -251,7 +231,7 @@ export default {
         this.actionToolbar.caseItem = null;
       },
       onClickSave() {
-        this.$store.dispatch('saveBotMessages', {
+        this.$store.dispatch('saveOwnBotMessages', {
           botId: this.botId,
           messages: this.messages
         })

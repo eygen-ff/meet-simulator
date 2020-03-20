@@ -357,13 +357,12 @@ const BotStore = {
                     });
             });
         },
-        getMyBotMessages: (state, payload) => {
+        getMyOwnBotMessages: (state, payload) => {
             return new Promise((resolve, reject) => {
-                BotApi.getBotMessages(state.getters.getToken, state.getters.getUid, payload.botId)
+                BotApi.getMyOwnBot(state.getters.getToken, state.getters.getUid, payload.botId)
                     .then((payload) => {
                         if ( payload.result === false ) {
-                            state.commit('loadMyBotMesages', []);
-                            return reject('Fail to load bot list');
+                            return reject('Fail to load bot messages');
                         }
                         resolve(payload.bot);
                     })
@@ -391,9 +390,9 @@ const BotStore = {
             });
         },
 
-        saveBotMessages(state, payload) {
+        saveOwnBotMessages(state, payload) {
             return new Promise((resolve, reject) => {
-                BotApi.saveBotMessagesConfig(
+                BotApi.saveOwnBotMessages(
                     state.getters.getToken, 
                     state.getters.getUid,
                     payload.botId,
