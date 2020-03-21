@@ -19,25 +19,13 @@
 
           <v-list subheader>
             <v-subheader v-if="girls.length">Girls</v-subheader>
+            <market-item :list="girls" v-on:add="onBotAdd"></market-item>
 
-            <v-list-item v-for="item in girls" :key="item.name">
-                <v-list-item-avatar>
-                  <v-img v-if="item.photo" :src="item.photo"></v-img>
-                </v-list-item-avatar>
-                
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.name"></v-list-item-title>
-                  <v-list-item-title class="price green--text"> {{item.price ? item.price : 'Free'}} </v-list-item-title>
-                </v-list-item-content>
-
-                <v-list-item-icon>
-                  <v-btn color="teal darken-4 ml-2">
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                </v-list-item-icon>
-            </v-list-item>
+            <v-subheader v-if="boys.length">Boys</v-subheader>
+            <market-item :list="boys" v-on:add="onBotAdd"></market-item>
 
           </v-list>  
+          
           </v-col>
         </v-row>
       </v-container>
@@ -52,23 +40,46 @@
 </template>
 
 <script>
+import MarketItem from '../components/MarketItem.vue';
+
 export default {
     props: {
+    },
+    components: {
+      MarketItem
     },
     computed: {
       girls() {
         let list = [];
         for (let i in this.$store.getters.getMarketBots) {
-          //if ([1,3].includes(this.list[i].status)) {
+          if (this.$store.getters.getMarketBots[i].gender === 'Female') {
             list.push(this.$store.getters.getMarketBots[i]);
-          //}
+          }
+        }
+        return list;
+      },
+      boys() {
+        let list = [];
+        for (let i in this.$store.getters.getMarketBots) {
+          if (this.$store.getters.getMarketBots[i].gender === 'Male') {
+            list.push(this.$store.getters.getMarketBots[i]);
+          }
         }
         return list;
       }
     },
+    mounted() {
+      this.$store.dispatch('loadMarketBots');
+    },
     methods: {
         onClickHome: function() {
             this.$router.push({name: 'Home'})
+        },
+        onBotAdd(bot) {
+          console.debug('onBotAdd', bot);
+          if (bot.stat.price > 0) {
+            this.$store.dispatch('buyMarketBot', bot);
+          }
         }
     },
 };

@@ -62,6 +62,7 @@ const BotStore = {
         loadingInfo: false,
         myBots: [],
         myOwnBots: [],
+        marketBots: [],
         isSendingCase: false
     },
     getters: {
@@ -157,15 +158,15 @@ const BotStore = {
         getMyOwnBots: (state) => {
             return state.myOwnBots;
         },
-        getMarketBots: () => {
-            return [
+        getMarketBots: (state) => {
+            return state.marketBots; /* [
                 {
                     id: 5,
                     name: "Kufa Sufa",
                     photo: "demo-photos/girl-01.png",
                     price: 0
                 }
-            ];
+            ];*/
         }
     },
     mutations: {
@@ -259,6 +260,9 @@ const BotStore = {
         },
         setMyOwnBots: (state, payload) => {
             state.myOwnBots = payload;
+        },
+        setMarketBots: (state, payload) => {
+            state.marketBots = payload;
         }
     },
     actions: {
@@ -442,8 +446,39 @@ const BotStore = {
                         reject(e);
                     });
             });
-        }
+        },
 
+        loadMarketBots(state) {
+            return new Promise((resolve, reject) => {
+                BotApi.getMarketBots(
+                    state.getters.getToken, 
+                    state.getters.getUid
+                )
+                    .then((response) => {
+                        state.commit('setMarketBots', response.bots);
+                        resolve();
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
+        },
+
+        buyMarketBot(state, payload) {
+            return new Promise((resolve, reject) => {
+                BotApi.buyMarketBot(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.id
+                )
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
+        }
 
     }
 };

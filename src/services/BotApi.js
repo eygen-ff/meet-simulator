@@ -300,6 +300,31 @@ class BotApi {
         }
         return response.data;
     }
+
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     */
+    async getMarketBots(token, uid) {
+        const response = await this.getAxiosAuth(token, uid).get('/bot/market/');
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     */
+    async buyMarketBot(token, uid, botId) {
+        const response = await this.getAxiosAuth(token, uid).post('/bot/market/' + botId + '/buy');
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
 }
 
 export default new BotApi;
