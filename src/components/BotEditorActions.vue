@@ -134,8 +134,8 @@
 export default {
     props: {
         currentId: {
-            type: String,
-            default: ''
+            type: Number,
+            default: null
         },
         botMessage: {
             type: String,

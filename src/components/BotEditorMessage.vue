@@ -78,7 +78,7 @@
 export default {
     props: {
       id: {
-        type: String,
+        type: Number,
         default: null
       },
       message: {

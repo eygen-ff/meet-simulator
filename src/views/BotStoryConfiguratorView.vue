@@ -47,7 +47,7 @@
 
     <v-footer app  class="panel-open">
       <bot-editor-actions 
-        :current-id="currentMessage ? currentMessage.id : ''"
+        :current-id="currentMessage ? currentMessage.id : null"
         :bot-message="actionToolbar.botMessage"
         :next-item="actionToolbar.nextItem"
         :case-item="actionToolbar.caseItem"
@@ -65,6 +65,15 @@
         v-on:save="onClickSave"
       ></bot-editor-actions>
     </v-footer>
+
+    <v-snackbar
+      top
+      color="red darken-4"
+      v-model="errorMessage.flag"
+      :timeout="5000"
+    >
+      {{ errorMessage.text }}
+    </v-snackbar>
   </v-app>        
     
 </template>
@@ -83,6 +92,10 @@ export default {
           botMessage: '',
           nextItem: null,
           caseItem: null
+        },
+        errorMessage: {
+          flag: false,
+          text: ''
         },
         toggledMessage: -1
       }
@@ -145,12 +158,16 @@ export default {
         this.actionToolbar.botMessage = '';
       },
 
+      getNewId() {
+        return parseInt(String(new Date().getTime()).substr(-5)); 
+      },
+
       onBotActionNewMessage() {
         this.messages.push({
-          id: String(new Date().getTime()).substr(-5),
+          id: this.getNewId(),
           text: '?',
           cases: [],
-          next: [{id: String(new Date().getTime()).substr(-5), points: 0, goto: null}]
+          next: [{id: this.getNewId(), points: 0, goto: null}]
         });
         this.toggledMessage = this.messages.length-1;
       },
@@ -167,13 +184,13 @@ export default {
         if (maxPoint >= 100) {
           throw Error('Maximim value of points');
         }
-        this.messages[this.toggledMessage].next.push({id: String(new Date().getTime()).substr(-5), points: maxPoint+1, goto: null});
+        this.messages[this.toggledMessage].next.push({id: this.getNewId(), points: maxPoint+1, goto: null});
       },
       onBotActionAddCase() {
         if (this.messages[this.toggledMessage].cases.length >= 6) {
           throw Error('To many cases');
         }
-        this.messages[this.toggledMessage].cases.push({id: String(new Date().getTime()).substr(-5), points: 0, text: ''});
+        this.messages[this.toggledMessage].cases.push({id: this.getNewId(), points: 0, text: ''});
       },
 
       onBotActionApplyNextItem(payload) {
@@ -238,7 +255,11 @@ export default {
           .then(() => {
             this.$router.push({name: 'BotEditor'})
           })
-          .catch(console.log);
+          .catch((e) => {
+            console.error(e.message);
+            this.errorMessage.flag = true;
+            this.errorMessage.text = e.message;
+          });
       }
   },
   watch: {

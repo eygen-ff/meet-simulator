@@ -258,6 +258,9 @@ class BotApi {
         const response = await this.getAxiosAuth(token, uid).post('/bot/own/' + botId + '/messages', {
             messages: messages
         });
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? response.data.message : 'API result is false');
+        }
         return response;
     }
     
