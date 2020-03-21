@@ -1,5 +1,7 @@
 <template>
 
+<!-- Story (page with messages for one bot) -->
+
 <v-app id="configurator">
     <v-app-bar
       app

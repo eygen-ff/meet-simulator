@@ -389,6 +389,26 @@ const BotStore = {
                 });
             });
         },
+        updateBot: (state, payload) => {
+            console.debug('updateBot', payload);
+            return new Promise((resolve, reject) => {
+                BotApi.updateBot(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.id,
+                    payload.name,
+                    payload.gender,
+                    payload.photo
+                ).then((response) => {
+                    if (response.result === false) {
+                        throw Error(response.error ? response.error : 'Fail to update bot');
+                    }
+                    resolve(response.bot);
+                }).catch((e) => {
+                    reject(e);
+                });
+            });
+        },
 
         saveOwnBotMessages(state, payload) {
             return new Promise((resolve, reject) => {
@@ -397,6 +417,23 @@ const BotStore = {
                     state.getters.getUid,
                     payload.botId,
                     payload.messages
+                )
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((e) => {
+                        reject(e);
+                    });
+            });
+        },
+
+        setBotPublishFlag(state, payload) {
+            return new Promise((resolve, reject) => {
+                BotApi.setBotPublishFlag(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.botId,
+                    payload.flag
                 )
                     .then(() => {
                         resolve();

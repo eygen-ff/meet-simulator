@@ -178,7 +178,7 @@ class BotApi {
         }
         const response = await axios.put('/user/register', form);
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response.data;
     }
@@ -189,7 +189,7 @@ class BotApi {
         }
         const response = await axios.post('/user/login', form);
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response.data;
     }
@@ -230,11 +230,19 @@ class BotApi {
             photo: photo
         });
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response.data;
     }
 
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
+     * @param {*} name 
+     * @param {*} gender 
+     * @param {*} photo 
+     */
     async updateBot(token, uid, botId, name, gender, photo) {
         const response = await this.getAxiosAuth(token, uid).post('/bot/', {
             id: botId,
@@ -243,7 +251,7 @@ class BotApi {
             photo: photo
         });
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response.data;
     }
@@ -259,13 +267,12 @@ class BotApi {
             messages: messages
         });
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response;
     }
     
     /**
-     * 
      * @param {*} token 
      * @param {*} uid 
      * @param {*} botId 
@@ -273,7 +280,23 @@ class BotApi {
     async getMyOwnBot(token, uid, botId) {
         const response = await this.getAxiosAuth(token, uid).get('/bot/own/' + botId);
         if (!response.data || response.data.result === false) {
-            throw Error(response.data.message ? response.data.message : 'API result is false');
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
+     * @param {*} flag 
+     */
+    async setBotPublishFlag(token, uid, botId, flag) {
+        const response = await this.getAxiosAuth(token, uid).post('/bot/own/' + botId + '/publish', {
+            flag: flag
+        });
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
         }
         return response.data;
     }
