@@ -129,31 +129,6 @@ const BotStore = {
         },
         getMyBots: (state) => {
             return state.myBots;
-            /*return [{
-                id: 1,
-                name: "Lia Okusawa",
-                photo: "demo-photos/girl-01.png",
-                status: 0,
-            },
-            {
-                id: 2,
-                name: "Kira Novotskaya",
-                photo: "demo-photos/girl-02.jpg",
-                status: 1
-            },
-            {
-                id: 3,
-                name: "Xxxxx",
-                photo: "demo-photos/girl-02.jpg",
-                status: 2
-            },
-            {
-                id: 4,
-                name: "Yyyyyy",
-                photo: "demo-photos/girl-02.jpg",
-                status: 3
-            }
-            ];*/
         },
         getMyOwnBots: (state) => {
             return state.myOwnBots;
@@ -267,16 +242,18 @@ const BotStore = {
     },
     actions: {
         loadBot: (state, payload) => {
-            return new Promise((resolve) => {
+            console.debug('loadBot');
+            return new Promise((resolve, reject) => {
                 state.commit('toggleLoadingBotInfo', true);
-                BotApi.getBotStatus(payload.id, null)
+                BotApi.getBotStatus(state.getters.getToken, state.getters.getUid, payload.id)
                     .then((botInfo) => {
                         state.commit('setBot', botInfo);
                         state.commit('toggleLoadingBotInfo', false);
                         resolve();
                     })
-                    .catch(() => {
+                    .catch((e) => {
                         state.commit('toggleLoadingBotInfo', false);
+                        reject(e);
                     });
             });
         },
@@ -287,6 +264,7 @@ const BotStore = {
             state.commit('toggleLoadingBotInfo', flagToggle);
         },
         loadMessages: (state, payload) => {
+            console.debug('loadMessages');
             return new Promise((resolve) => {
                 BotApi.getBotChat(payload.botId, null)
                     .then((botInfo) => {

@@ -57,10 +57,10 @@
                   <v-btn small @click="onBotConfig(item)" class="mb-1">
                     <v-icon class="mr-1">mdi-graph</v-icon> story
                   </v-btn>
-                  <v-btn v-if="!item.flag_publish" small @click="onBotPublish(item)">
+                  <v-btn v-if="!item.flagPublish" small @click="onBotPublish(item)">
                     <v-icon class="mr-1">mdi-timeline-text</v-icon> publish
                   </v-btn>
-                  <v-btn v-if="item.flag_publish" color="indigo darken-1" small @click="onBotUnpublish(item)">
+                  <v-btn v-if="item.flagPublish" color="indigo darken-1" small @click="onBotUnpublish(item)">
                     <v-icon class="mr-1">mdi-timeline-text</v-icon> unpublish
                   </v-btn>
                 </v-list-item-icon>

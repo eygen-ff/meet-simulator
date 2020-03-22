@@ -28,8 +28,14 @@ class BotApi {
      * @param {Number} botId 
      * @param {*} userData 
      */
-    async getBotStatus(botId, userData) {
-        console.debug('BotApi.getBotStatus', botId);
+    async getBotStatus(token, uid, botId) {
+        console.debug('Api.getBotStatus');
+        const response = await this.getAxiosAuth(token, uid).get('/bot/status/' + botId);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+        /*console.debug('BotApi.getBotStatus', botId);
         return {
             id: botId,
             name: "Lia Okusawa",
@@ -42,7 +48,7 @@ class BotApi {
                 "demo-photos/girl-02.jpg"
             ],
             userData
-        }
+        }*/
     }
 
     /**

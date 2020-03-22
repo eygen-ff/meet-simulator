@@ -23,7 +23,7 @@
             :key="item.id" 
             :text="item.text" 
             :send-at="new Date(item.sendAt)" 
-            :photo="item.photo"
+            :photo="item.photoUrl"
             :flag-is-owner="item.flagIsOwner" 
             :flag-is-last="item.id === $store.getters.getChatLastMessage.id"
             ></Message>
@@ -43,6 +43,15 @@
       :rate="$store.getters.getBotRate"
       :gallery="$store.getters.getBotGallery"
       v-on:close="onCloseBotInfoDialog"></bot-info-dialog>
+
+    <v-snackbar
+      top
+      color="red darken-4"
+      v-model="error.flag"
+      :timeout="5000"
+    >
+      {{ error.message }}
+    </v-snackbar>
     
   </v-app>
 </template>
@@ -60,11 +69,16 @@ export default {
   mixins: [VueTimers],
   timers: {
     renderMessages: { time: 12000, //autostart: true, //repeat: true 
-    }
+    },
+    onClickHome: {time: 5000, autostart: false}
   },
   data: () => ({
     botId: null,
-    flagShowBotInfo: false
+    flagShowBotInfo: false,
+    error: {
+      flag: false,
+      message: ''
+    }
   }),
   mounted: function() {
     this.botId = this.$router.currentRoute.params.bot;
@@ -76,10 +90,19 @@ export default {
             this.$vuetify.goTo("#lastMsg");
           }, 100);
         }
+      })
+      .catch((e) => {
+        console.error('Chat.error', e);
+        this.showError(e ? e.message : 'Произошла ошибка при загрузке данных');
       });
       
   },
   methods: {
+    showError(errorMessage) {
+      this.error.message = errorMessage;
+      this.error.flag = true;
+      this.$timer.start('onClickHome');
+    },
     onClickHome: function() {
       this.$router.push({ name: "Home" });
     },

@@ -3,7 +3,7 @@
     <v-subheader v-if="online.length">Online</v-subheader>
     <v-list-item v-for="item in online" :key="item.name" @click="onContactClick(item)">
         <v-list-item-avatar>
-          <v-img v-if="item.photo" :src="item.photo"></v-img>
+          <v-img v-if="item.photoUrl" :src="item.photoUrl"></v-img>
         </v-list-item-avatar>
         
         <v-list-item-content>
@@ -18,7 +18,7 @@
     <v-subheader v-if="offline.length">Offline</v-subheader>
     <v-list-item v-for="item in offline" :key="item.name">
         <v-list-item-avatar>
-          <v-img v-if="item.photo" :src="item.photo"></v-img>
+          <v-img v-if="item.photoUrl" :src="item.photoUrl"></v-img>
         </v-list-item-avatar>
         
         <v-list-item-content>

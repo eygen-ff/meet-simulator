@@ -32,9 +32,7 @@
         </v-row>
       </v-container>
     </v-content>
-    <v-footer
-      app
-    >
+    <v-footer app>
       <span class="white--text">&copy; effus labs</span>
     </v-footer>
   </v-app>
@@ -59,6 +57,7 @@
 
     mounted: function() {
       this.drawer = null;
+      this.$store.dispatch('loadMyBots');
     },
 
     methods: {
