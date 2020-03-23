@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             form: {
-                id: this.inputForm.id,
+                id: this.inputForm ? this.inputForm.id : null,
                 name: this.inputForm ? this.inputForm.name : '',
                 photo: this.inputForm ? this.inputForm.photoUrl : '',
                 gender: this.inputForm ? this.inputForm.gender : ''

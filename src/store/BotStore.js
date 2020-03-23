@@ -149,7 +149,7 @@ const BotStore = {
             state.id = bot.id;
             state.name = bot.name;
             state.info = bot.info;
-            state.photo = bot.photo;
+            state.photo = bot.photoUrl;
             state.status = bot.status;
             state.rate = bot.rate;
             state.gallery = bot.gallery;
@@ -246,8 +246,8 @@ const BotStore = {
             return new Promise((resolve, reject) => {
                 state.commit('toggleLoadingBotInfo', true);
                 BotApi.getBotStatus(state.getters.getToken, state.getters.getUid, payload.id)
-                    .then((botInfo) => {
-                        state.commit('setBot', botInfo);
+                    .then((response) => {
+                        state.commit('setBot', response.bot);
                         state.commit('toggleLoadingBotInfo', false);
                         resolve();
                     })
@@ -264,16 +264,16 @@ const BotStore = {
             state.commit('toggleLoadingBotInfo', flagToggle);
         },
         loadMessages: (state, payload) => {
-            console.debug('loadMessages');
-            return new Promise((resolve) => {
-                BotApi.getBotChat(payload.botId, null)
+            return new Promise((resolve, reject) => {
+                BotApi.getBotChat(state.getters.getToken, state.getters.getUid, payload.botId)
                     .then((botInfo) => {
                         state.commit('setMessages', botInfo);
                         state.commit('setChat');
                         state.commit('setChatState');
                         resolve();
                     })
-                    .catch(() => {
+                    .catch((e) => {
+                        reject(e);
                     });
             });
         },

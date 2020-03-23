@@ -82,19 +82,19 @@ export default {
   }),
   mounted: function() {
     this.botId = this.$router.currentRoute.params.bot;
-    this.$store.dispatch("loadBot", { id: this.botId })
-      .then(this.$store.dispatch("loadMessages", { botId: this.botId }))
-      .then(() => {
-        if (document.querySelector("#lastMsg")) {
-          setTimeout(() => {
-            this.$vuetify.goTo("#lastMsg");
-          }, 100);
-        }
-      })
-      .catch((e) => {
-        console.error('Chat.error', e);
-        this.showError(e ? e.message : 'Произошла ошибка при загрузке данных');
-      });
+    Promise.all([
+      this.$store.dispatch("loadBot", { id: this.botId }),
+      this.$store.dispatch("loadMessages", { botId: this.botId })
+    ]).then(() => {
+      if (document.querySelector("#lastMsg")) {
+        setTimeout(() => {
+          this.$vuetify.goTo("#lastMsg");
+        }, 100);
+      }
+    }).catch((e) => {
+      console.error('Chat.error', e);
+      this.showError(e ? e.message : 'Произошла ошибка при загрузке данных');
+    });
       
   },
   methods: {

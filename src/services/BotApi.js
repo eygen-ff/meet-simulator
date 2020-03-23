@@ -25,11 +25,11 @@ class BotApi {
     }
 
     /**
-     * @param {Number} botId 
-     * @param {*} userData 
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
      */
     async getBotStatus(token, uid, botId) {
-        console.debug('Api.getBotStatus');
         const response = await this.getAxiosAuth(token, uid).get('/bot/status/' + botId);
         if (!response.data || response.data.result === false) {
             throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
@@ -52,11 +52,18 @@ class BotApi {
     }
 
     /**
-     * @param {Number} botId 
-     * @param {*} userData 
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
      */
-    async getBotChat(botId, userData) {
-        console.debug('BotApi.getBotChat', botId);
+    async getBotChat(token, uid, botId) {
+        const response = await this.getAxiosAuth(token, uid).get('/bot/chat/' + botId);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+
+        /*console.debug('BotApi.getBotChat', botId);
         return {
             id: botId,
             userData,
@@ -117,9 +124,9 @@ class BotApi {
                     selected: null,
                     sendAt: null
                 },
-                */
+                
             ]
-        }
+        }*/
     }
 
     async sendCase(botId, caseId, userData) {
