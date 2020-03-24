@@ -8,11 +8,12 @@
             <v-row >
               <v-col class="px-0 py-0 mb-4" cols="9" sm="6" @click="onClickBotMessageEdit">
                 <v-label class="mb-2">Bot message</v-label>
-                <v-card-text class="px-1 py-1 green darken-4 elevation-6">{{message}}</v-card-text>
+                <v-card-text v-if="!isFirst" class="px-1 py-1 green darken-4 elevation-6">{{message}}</v-card-text>
+                <v-card-text v-if="isFirst" class="px-1 py-1 elevation-6">[First message is empty, user starts dialog]</v-card-text>
               </v-col>
 
               <v-col cols="3" sm="6" class="mt-2">
-                <v-btn class="px-1" @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
+                <v-btn v-if="!isFirst" class="px-1" @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
                 <v-btn @click="onClickBotMessageActions"><v-icon>mdi-message-settings-outline</v-icon></v-btn>
               </v-col>
 
@@ -92,6 +93,10 @@ export default {
       cases: {
         type: Array,
         default: () => []
+      },
+      isFirst: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

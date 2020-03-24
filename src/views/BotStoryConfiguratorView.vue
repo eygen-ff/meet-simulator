@@ -30,6 +30,7 @@
                   :message="item.text" 
                   :next="item.next" 
                   :cases="item.cases"
+                  :is-first="actionToolbar.isFirst"
                   v-on:edit-message="onEditBotMessage"
                   v-on:action-message="onBotMessageAction"
                   v-on:edit-next-item="onEditNextItem"
@@ -53,6 +54,7 @@
         :bot-message="actionToolbar.botMessage"
         :next-item="actionToolbar.nextItem"
         :case-item="actionToolbar.caseItem"
+        :is-first="actionToolbar.isFirst"
         v-on:new-message="onBotActionNewMessage"
         v-on:add-condition="onBotActionAddCondition"
         v-on:add-case="onBotActionAddCase"
@@ -92,6 +94,7 @@ export default {
         messages: [],
         actionToolbar: {
           botMessage: '',
+          isFirst: false,
           nextItem: null,
           caseItem: null
         },
@@ -197,6 +200,7 @@ export default {
 
       onBotActionApplyNextItem(payload) {
         let existedPoints = [];
+        console.debug('onBotActionApplyNextItem', payload);
         for (let i in this.messages[this.toggledMessage].next) {
           if (this.messages[this.toggledMessage].next[i].id === payload.id) {
             continue;
@@ -209,7 +213,7 @@ export default {
           if (existedPoints.includes(payload.points)) {
             throw Error('Points value already defined in this message');
           }
-          if (!payload.goto) {
+          if (!payload.goto && payload.id !== ':finish:') {
             throw Error('No target message defined');
           }
           if (this.messages[this.toggledMessage].next[i].id === payload.id) {
@@ -268,6 +272,11 @@ export default {
     toggledMessage(value) {
       if (value > -1) {
         this.actionToolbar.mode = 'actions';
+        if (this.toggledMessage === 0) {
+          this.actionToolbar.isFirst = true;
+        } else {
+          this.actionToolbar.isFirst = false;
+        }
       }
     }
   }

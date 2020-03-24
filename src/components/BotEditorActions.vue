@@ -115,7 +115,7 @@
                     <v-btn class="px-0" @click="onClickNewMessage"><span>New</span><v-icon>mdi-beaker-plus-outline</v-icon></v-btn>
 
                     <template v-if="currentId">
-                        <v-btn class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
+                        <v-btn v-if="!isFirst" class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
                         <v-btn class="px-0" @click="onClickAddCondition"><span>Add condition</span><v-icon>mdi-help-network-outline</v-icon></v-btn>
                         <v-btn class="px-0" @click="onClickAddCase"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
                         <v-btn class="px-0" @click="onClickSave"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
@@ -131,6 +131,12 @@
 </template>
 
 <script>
+
+const RESERVED_WORD_FINISH = ':finish:';
+const ReservedWords = [
+    RESERVED_WORD_FINISH
+];
+
 export default {
     props: {
         currentId: {
@@ -157,6 +163,10 @@ export default {
                 points: 0,
                 text: null
             })
+        },
+        isFirst: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -202,8 +212,12 @@ export default {
                 throw Error('Empty value for selected');
             }
             const goto = this.tempComboId.replace(/#/,'');
+            const intValue = parseInt(goto);
             if (!goto) {
                 throw Error('Value not found');
+            }
+            if (isNaN(intValue) && !ReservedWords.includes(goto)) {
+                throw Error('Bad value for target');
             }
             if (this.nextItem.points === 0) {
                 this.tempPoints = 0;
@@ -211,7 +225,7 @@ export default {
             this.$emit('apply-next-item', {
                 id: this.nextItem.id,
                 points: this.tempPoints,
-                goto: parseInt(goto)
+                goto: goto
             });
         },
         onClickCancelNextItem() {
@@ -272,11 +286,12 @@ export default {
     },
     computed: {
         comboMessageList() {
-            const list = this.nextItem.list.filter(value => {
+            let list = this.nextItem.list.filter(value => {
                 if (value.id !== this.currentId) {
                     return true;
                 }
             });
+            list.push(RESERVED_WORD_FINISH);
             return list;
         }
     }
