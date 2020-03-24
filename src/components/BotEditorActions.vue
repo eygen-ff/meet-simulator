@@ -211,13 +211,15 @@ export default {
             if (!this.tempComboId) {
                 throw Error('Empty value for selected');
             }
-            const goto = this.tempComboId.replace(/#/,'');
-            const intValue = parseInt(goto);
-            if (!goto) {
+            let gotoValue = this.tempComboId.replace(/#/,'');
+            const intValue = parseInt(gotoValue);
+            if (!gotoValue) {
                 throw Error('Value not found');
             }
-            if (isNaN(intValue) && !ReservedWords.includes(goto)) {
+            if (isNaN(intValue) && !ReservedWords.includes(gotoValue)) {
                 throw Error('Bad value for target');
+            } else if (!isNaN(intValue)) {
+                gotoValue = String(intValue);
             }
             if (this.nextItem.points === 0) {
                 this.tempPoints = 0;
@@ -225,7 +227,7 @@ export default {
             this.$emit('apply-next-item', {
                 id: this.nextItem.id,
                 points: this.tempPoints,
-                goto: goto
+                goto: gotoValue
             });
         },
         onClickCancelNextItem() {

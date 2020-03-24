@@ -30,7 +30,7 @@
                     :key="i" @click="onClickNextItem(item)">
                     <v-list-item-title> > {{item.points}}</v-list-item-title>
                     <v-list-item-subtitle class="col-4 py-1 my-0">
-                      <v-btn v-if="item.goto">{{'#' + item.goto}}</v-btn>
+                      <v-btn v-if="item.goto">{{ isNaN(parseInt(item.goto)) ? item.goto : '#' + item.goto}}</v-btn>
                     </v-list-item-subtitle>
                     <v-list-item-icon class="col-2 py-1 my-0 mt-1 justify-end">
                       <v-btn fab x-small><v-icon dark>mdi-pencil</v-icon></v-btn>

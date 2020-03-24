@@ -266,8 +266,8 @@ const BotStore = {
         loadMessages: (state, payload) => {
             return new Promise((resolve, reject) => {
                 BotApi.getBotChat(state.getters.getToken, state.getters.getUid, payload.botId)
-                    .then((botInfo) => {
-                        state.commit('setMessages', botInfo);
+                    .then((response) => {
+                        state.commit('setMessages', response.chat);
                         state.commit('setChat');
                         state.commit('setChatState');
                         resolve();
