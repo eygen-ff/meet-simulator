@@ -1,0 +1,18 @@
+{
+    "locators": "locators-mobile.json",
+    "screenshots": {
+        "path": "/screenshots/",
+        "prefix": "01-"
+    },
+    "ignoreConsoleMessages": {
+        "types": [
+            "log", "debug", "info", "trace"
+        ],
+        "mask": []
+    },
+    "scenarios": [
+        {
+            
+        }
+    ]
+}
