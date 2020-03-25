@@ -79,6 +79,60 @@ class UsualScenarios {
         await element.type(params.password, {delay: 100});
         await scenarioParam.page.click(locatorSubmitBtn);
     }
+
+    /**
+     * Авторизация юзера
+     * @param {*} scenarioParam 
+     */
+    async submitLogin(scenarioParam) {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const locatorEmail = '#inspire form .v-input:nth-child(1) input';
+        const locatorPassword = '#inspire form .v-input:nth-child(2) input';
+        const locatorSubmitBtn = "#inspire form button.primary";
+        await scenarioParam.page.waitForSelector(locatorEmail, {timeout: 5000});
+        let element = await scenarioParam.page.$(locatorEmail);
+        await element.type(params.email, {delay: 100});
+        element = await scenarioParam.page.$(locatorPassword);
+        await element.type(params.password, {delay: 100});
+        await scenarioParam.page.click(locatorSubmitBtn);
+    }
+
+    /**
+     * Выбор пункта меню "Редактор ботов"
+     * @param {*} scenarioParam 
+     */
+    async selectMenuBotEditor(scenarioParam) {
+        const locatorMenuBtn = '#inspire header button';
+        const menuItem = '#inspire div.v-navigation-drawer__content div.v-list-item:nth-child(2)';
+        await scenarioParam.page.waitForSelector(locatorMenuBtn, {timeout: 5000});
+        await scenarioParam.page.click(locatorMenuBtn);
+        await scenarioParam.page.waitForSelector(menuItem, {timeout: 5000});
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(menuItem);
+    }
+
+    async createBot(scenarioParam) {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const createBtnLocator = '#inspire main button.v-btn';
+        const botNameLocator = '#inspire main div.v-input:nth-child(1) input';
+        const botPhotoLocator = '#inspire main div.v-input:nth-child(2) input';
+        const botGenderSelectLocator = '#inspire main div.v-input:nth-child(3) input';
+        const botGenderSelectListLocator = '.v-menu__content .v-list-item:nth-child(' + params.genderIndex + ')';
+        await scenarioParam.page.waitForSelector(createBtnLocator, {timeout: 5000});
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(createBtnLocator);
+        await scenarioParam.page.waitForSelector(botNameLocator, {timeout: 5000});
+        await scenarioParam.page.waitFor(1000);
+        let element = await scenarioParam.page.$(botNameLocator);
+        await element.type(params.name, {delay: 100});
+        element = await scenarioParam.page.$(botPhotoLocator);
+        await element.type(params.photo, {delay: 100});
+        await scenarioParam.page.click(botGenderSelectLocator);
+        await scenarioParam.page.waitForSelector(botGenderSelectListLocator, {timeout: 5000});
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(botGenderSelectListLocator);
+        await scenarioParam.page.waitFor(1000);
+    }
 }
 
 module.exports = new UsualScenarios;

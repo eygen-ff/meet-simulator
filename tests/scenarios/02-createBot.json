@@ -1,0 +1,41 @@
+{
+    "locators": "locators-mobile.json",
+    "screenshots": {
+        "path": "/screenshots/",
+        "prefix": "01-"
+    },
+    "ignoreConsoleMessages": {
+        "types": [
+            "log", "debug", "info", "trace"
+        ],
+        "mask": [
+            "verbose @ [DOM] Input elements should have autocomplete attributes"
+        ]
+    },
+    "scenarios": [
+        {
+            "method": "openLogin",
+            "params": {
+                "url": "http://localhost:8080/"
+            }
+        },
+        {
+            "method": "submitLogin",
+            "params": {
+                "email": "root@test.ee",
+                "password": "123123123"
+            }
+        },
+        {
+            "method": "selectMenuBotEditor"
+        },
+        {
+            "method": "createBot",
+            "params": {
+                "name": "Sample 1",
+                "photo": "root@test.ee",
+                "genderIndex": 2
+            }
+        }
+    ]
+}
