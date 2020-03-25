@@ -8,11 +8,34 @@
         "types": [
             "log", "debug", "info", "trace"
         ],
-        "mask": []
+        "mask": [
+            "verbose @ [DOM] Input elements should have autocomplete attributes"
+        ]
     },
     "scenarios": [
         {
-            
+            "method": "resetDb",
+            "params": {
+                "url": "http://localhost:5000/"
+            }
+        },
+        {
+            "method": "openLogin",
+            "params": {
+                "url": "http://localhost:8080/"
+            }
+        },
+        {
+            "method": "clickRegisterBtn",
+            "params": {}
+        },
+        {
+            "method": "submitRegisterForm",
+            "params": {
+                "name": "root",
+                "email": "root@test.ee",
+                "password": "123123123"
+            }
         }
     ]
 }

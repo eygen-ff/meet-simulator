@@ -26,7 +26,6 @@ if (!fs.existsSync(__dirname + '/scenarios/' + scenarioFile)) {
         } 
         console.log('Available scenarios', items);
     });
-    //
 
 } else {
     const scenario = require(__dirname + '/scenarios/' + scenarioFile);

@@ -3,16 +3,17 @@
 class ScenarioParamVo {
 
     /**
-     * @param page {*}
-     * @param scenario {*}
-     * @param test {*}
+     * 
+     * @param {number} index 
+     * @param {*} scenario 
+     * @param {*} page 
      */
-    constructor(page, scenario, test) {
-        this.page = page;
+    constructor(index, scenario, page) {
+        this.index = index;
         this.scenario = scenario;
-        this.test = test;
+        this.page = page;
     }
 
 }
 
-module.exports = new ScenarioParamVo;
+module.exports = {ScenarioParamVo};
