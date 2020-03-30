@@ -16,7 +16,7 @@
         {
             "method": "openLogin",
             "params": {
-                "url": "http://localhost:8080/"
+                "url": "http://localhost:8082/"
             }
         },
         {
@@ -33,7 +33,7 @@
             "method": "createBot",
             "params": {
                 "name": "Sample 1",
-                "photo": "root@test.ee",
+                "photo": "https://i.ibb.co/zFRvtNS/person-02.png",
                 "genderIndex": 2
             }
         }

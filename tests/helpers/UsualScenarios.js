@@ -31,10 +31,10 @@ class UsualScenarios {
     async resetDb(scenarioParam) {
         const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
         const dt = new Date();
-        const timeStr = dt.getFullYear() + dt.getMonth() + dt.getDate() + dt.getHours();
+        const timeStr = String(dt.getFullYear()) + dt.getMonth() + dt.getDate();
         const token = hashSomething('SecureService.resetDb' + timeStr);
         const httpClient = this.getAxiosAuth(token);
-        console.debug('resetDb', url + 'datesimapi/1.0.0/secure/resetDb', token);    
+        console.debug('resetDb', url + 'datesimapi/1.0.0/secure/resetDb', timeStr, token);    
         await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetDb');
     }
 
@@ -118,6 +118,7 @@ class UsualScenarios {
         const botPhotoLocator = '#inspire main div.v-input:nth-child(2) input';
         const botGenderSelectLocator = '#inspire main div.v-input:nth-child(3) input';
         const botGenderSelectListLocator = '.v-menu__content .v-list-item:nth-child(' + params.genderIndex + ')';
+        const locatorSubmitBtn = "#inspire form button.primary";
         await scenarioParam.page.waitForSelector(createBtnLocator, {timeout: 5000});
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(createBtnLocator);
@@ -131,6 +132,8 @@ class UsualScenarios {
         await scenarioParam.page.waitForSelector(botGenderSelectListLocator, {timeout: 5000});
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(botGenderSelectListLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(locatorSubmitBtn);
         await scenarioParam.page.waitFor(1000);
     }
 }
