@@ -136,6 +136,28 @@ class UsualScenarios {
         await scenarioParam.page.click(locatorSubmitBtn);
         await scenarioParam.page.waitFor(1000);
     }
+
+    async editBotStory(scenarioParam) {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const botStoryBtnLocator = '#inspire main div.v-list div.v-list-item:nth-child('+ (params.botIndex + 1) +') .v-list-item__icon button:nth-child(2)';
+        await scenarioParam.page.waitForSelector(botStoryBtnLocator, {timeout: 5000});
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(botStoryBtnLocator);
+        await scenarioParam.page.waitFor(1000);
+    }
+
+    async addNewMessagesToStory() {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const newBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(1)';
+        const newNextConditionBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(2)';
+        const newAnswerCaseBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(3)';
+        const editNextConditionLocator = '#configurator main div.v-item--active .bot-answer-item .next-item';
+        const userAnswerCaseLocator = '#configurator main div.v-item--active div.user-answer-case:nth-child(1)';
+        await scenarioParam.page.waitForSelector(newAnswerCaseBtnLocator, {timeout: 5000});
+        await scenarioParam.page.click(newAnswerCaseBtnLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(userAnswerCaseLocator);
+    }
 }
 
 module.exports = new UsualScenarios;

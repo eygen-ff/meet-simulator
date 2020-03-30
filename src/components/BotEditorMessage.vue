@@ -8,13 +8,13 @@
             <v-row >
               <v-col class="px-0 py-0 mb-4" cols="9" sm="6" @click="onClickBotMessageEdit">
                 <v-label class="mb-2">Bot message</v-label>
-                <v-card-text v-if="!isFirst" class="px-1 py-1 green darken-4 elevation-6">{{message}}</v-card-text>
+                <v-card-text v-if="!isFirst" class="px-1 py-1 green darken-4 elevation-6 message-text">{{message}}</v-card-text>
                 <v-card-text v-if="isFirst" class="px-1 py-1 elevation-6">[First message is empty, user starts dialog]</v-card-text>
               </v-col>
 
               <v-col cols="3" sm="6" class="mt-2">
-                <v-btn v-if="!isFirst" class="px-1" @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
-                <v-btn @click="onClickBotMessageActions"><v-icon>mdi-message-settings-outline</v-icon></v-btn>
+                <v-btn v-if="!isFirst" class="px-1 message-edit-btn" @click="onClickBotMessageEdit"><v-icon>mdi-comment-edit</v-icon></v-btn>
+                <v-btn @click="onClickBotMessageActions" class="message-actions-btn"><v-icon>mdi-message-settings-outline</v-icon></v-btn>
               </v-col>
 
             </v-row>
@@ -26,7 +26,7 @@
 
                 <v-list class="py-0">
 
-                  <v-list-item class="elevation-1 mb-1 blue-grey darken-3" v-for="(item,i) in this.next" 
+                  <v-list-item class="elevation-1 mb-1 blue-grey darken-3 next-item" v-for="(item,i) in this.next" 
                     :key="i" @click="onClickNextItem(item)">
                     <v-list-item-title> > {{item.points}}</v-list-item-title>
                     <v-list-item-subtitle class="col-4 py-1 my-0">
@@ -57,7 +57,7 @@
     <v-card-actions class="px-0 py-0">
       
       <v-list dense class="py-0 px-2 col-sm-8" width="100%">
-        <v-list-item class="elevation-1 mb-1 blue-grey darken-4" v-for="(item,i) in cases" :key="i" @click="onClickCaseItem(item)">
+        <v-list-item class="elevation-1 mb-1 blue-grey darken-4 user-answer-case" v-for="(item,i) in cases" :key="i" @click="onClickCaseItem(item)">
           <v-list-item-content class="">
             <v-list-item-title class="wrap">{{item.text}}</v-list-item-title>
           </v-list-item-content>

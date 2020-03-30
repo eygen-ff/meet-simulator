@@ -2,7 +2,7 @@
     "locators": "locators-mobile.json",
     "screenshots": {
         "path": "/screenshots/",
-        "prefix": "02-"
+        "prefix": "03-"
     },
     "ignoreConsoleMessages": {
         "types": [
@@ -30,11 +30,17 @@
             "method": "selectMenuBotEditor"
         },
         {
-            "method": "createBot",
+            "method": "editBotStory",
             "params": {
-                "name": "Sample 1",
-                "photo": "https://i.ibb.co/zFRvtNS/person-02.png",
-                "genderIndex": 2
+                "botIndex": 1
+            }
+        },
+        {
+            "method": "addNewMessagesToStory",
+            "params": {
+                "isFirst": true,
+                "firstUserAnswer": "My first answer case",
+                "secondUserAnswer": "My second answer case"
             }
         }
     ]
