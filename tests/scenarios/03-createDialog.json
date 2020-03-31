@@ -39,8 +39,10 @@
             "method": "addNewMessagesToStory",
             "params": {
                 "isFirst": true,
-                "firstUserAnswer": "My first answer case",
-                "secondUserAnswer": "My second answer case"
+                "firstUserAnswer": "Hi!",
+                "secondUserAnswer": "Shit!",
+                "botSecondMessage": "Hey!",
+                "botThirdMessage": "Yea.. Its funny"
             }
         }
     ]

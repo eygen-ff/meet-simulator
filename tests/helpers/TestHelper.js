@@ -18,7 +18,10 @@ class TestHelper {
         const locators = require( __dirname + '/../' + scenario.locators);
         const viewport = {
             width: locators.SCREEN_SIZE.w,
-            height: locators.SCREEN_SIZE.h
+            height: locators.SCREEN_SIZE.h,
+            deviceScaleFactor: 4,
+            isMobile: true,
+            hasTouch: true
         };
         const browser = await puppeteer.launch({
             args: [
@@ -28,8 +31,10 @@ class TestHelper {
             defaultViewport: viewport,
             headless: locators.BROWSER.headless ? locators.BROWSER.headless : false
         });
+        viewport.height -= 130;
         //await browser.waitForTarget(() => false);
         const page = await browser.newPage();
+        await page.setViewport(viewport);
         page.on('pageerror', async(error) => {
             console.log(chalk.red('pageerror >>>'), error);
             await page.screenshot({path: __dirname + '/../' + scenario.screenshots.path + '/' + scenario.screenshots.prefix + 'error_' + dtString + '.png'});

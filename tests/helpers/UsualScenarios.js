@@ -146,19 +146,142 @@ class UsualScenarios {
         await scenarioParam.page.waitFor(1000);
     }
 
-    async addNewMessagesToStory() {
+    async addNewMessagesToStory(scenarioParam) {
         const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
         const newBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(1)';
-        const newNextConditionBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(2)';
         const newAnswerCaseBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(3)';
-        const editNextConditionLocator = '#configurator main div.v-item--active .bot-answer-item .next-item';
         const userAnswerCaseLocator = '#configurator main div.v-item--active div.user-answer-case:nth-child(1)';
-        const answerTextAreaLocator = '';
-        await scenarioParam.page.waitForSelector(newAnswerCaseBtnLocator, {timeout: 5000});
+        const userAnswerCaseLocator2 = '#configurator main div.v-item--active div.user-answer-case:nth-child(2)';
+        const answerPointSlider = '#configurator div.points-slider-container div.v-input__slot div.v-slider__thumb-container';
+        const answerTextAreaLocator = '.answer-text-container textarea';
+        const actionApplyBtn = '#configurator .v-bottom-navigation button.primary';
+        const botMessageEditBtn = '.v-item--active button.message-edit-btn';
+        const botMessageArea = '#configurator footer .bot-message-container textarea';
+        const accordeonFirstSlide = '#configurator main div.v-expansion-panel:nth-child(1)';
+        const editNextConditionLocator = '#configurator main div.v-item--active .bot-answer-item .next-item:nth-child(1)';
+        const editNextConditionLocator2 = '#configurator main div.v-item--active .bot-answer-item .next-item:nth-child(2)';
+        const nextCombobox = '#configurator footer .next-combobox-container .v-select';
+        const nextComboboxItem2 = '.v-select-list .v-list-item:nth-child(2)';
+        const nextComboboxItem3 = '.v-select-list .v-list-item:nth-child(3)';
+        const nextComboboxItem4 = '.v-select-list .v-list-item:nth-child(4)';
+        const newNextConditionBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(2)';
+        const nextConditionDeleteBtn = '#configurator .v-bottom-navigation button.secondary:nth-child(2)';
+        const nextPointSlider = '#configurator .next-slider-container div.v-input__slot div.v-slider__thumb-container';
+        const saveBtn = '#configurator .save-btn';
+
+        await scenarioParam.page.waitForSelector(newBtnLocator, {timeout: 5000});
+        await scenarioParam.page.click(newBtnLocator);
+        await scenarioParam.page.waitFor(1000);
+        // первый кейс ответа
         await scenarioParam.page.click(newAnswerCaseBtnLocator);
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(userAnswerCaseLocator);
-
+        await scenarioParam.page.waitFor(1000);
+        let element = await scenarioParam.page.$(answerTextAreaLocator);
+        await element.type(params.firstUserAnswer, {delay: 100});
+        element = await scenarioParam.page.$(answerPointSlider);
+        let sliderBox = await element.boundingBox();
+        await scenarioParam.page.mouse.move(sliderBox.x + 5, sliderBox.y+5);
+        await scenarioParam.page.mouse.down();
+        await scenarioParam.page.mouse.move(sliderBox.x + 30, sliderBox.y+5);
+        await scenarioParam.page.mouse.up();
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(1000);
+        // второе сообщение бота
+        await scenarioParam.page.click(newBtnLocator);
+        await scenarioParam.page.waitFor(3000);
+        await scenarioParam.page.click(botMessageEditBtn);
+        await scenarioParam.page.waitFor(500);
+        await scenarioParam.page.click(botMessageArea);
+        await scenarioParam.page.keyboard.press('Backspace');
+        element = await scenarioParam.page.$(botMessageArea);
+        await element.type(params.botSecondMessage, {delay: 100});
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(2000);
+        await scenarioParam.page.click(editNextConditionLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextCombobox);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextComboboxItem3);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(2000);
+        // переход на первое сообщение
+        await scenarioParam.page.click(accordeonFirstSlide);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(editNextConditionLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextCombobox);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextComboboxItem2);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(2000);
+        // второй кейс первого сообщения
+        await scenarioParam.page.click(newAnswerCaseBtnLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(userAnswerCaseLocator2);
+        await scenarioParam.page.waitFor(1000);
+        element = await scenarioParam.page.$(answerTextAreaLocator);
+        await element.type(params.secondUserAnswer, {delay: 100});
+        element = await scenarioParam.page.$(answerPointSlider);
+        sliderBox = await element.boundingBox();
+        await scenarioParam.page.mouse.move(sliderBox.x + 5, sliderBox.y+5);
+        await scenarioParam.page.mouse.down();
+        await scenarioParam.page.mouse.move(sliderBox.x + 60, sliderBox.y+5, {steps: 5});
+        await scenarioParam.page.mouse.up();
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(1000);
+        // третье сообщение
+        await scenarioParam.page.click(newBtnLocator);
+        await scenarioParam.page.waitFor(3000);
+        await scenarioParam.page.click(botMessageEditBtn);
+        await scenarioParam.page.waitFor(500);
+        await scenarioParam.page.click(botMessageArea);
+        await scenarioParam.page.keyboard.press('Backspace');
+        element = await scenarioParam.page.$(botMessageArea);
+        await element.type(params.botThirdMessage, {delay: 100});
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(1500);
+        await scenarioParam.page.click(editNextConditionLocator);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextCombobox);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextComboboxItem4);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(2000);
+        // переход на первое
+        await scenarioParam.page.click(accordeonFirstSlide);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(newNextConditionBtnLocator);
+        await scenarioParam.page.click(newNextConditionBtnLocator);
+        await scenarioParam.page.waitFor(500);
+        // удаление 2 условия
+        await scenarioParam.page.click(editNextConditionLocator2);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextConditionDeleteBtn);
+        await scenarioParam.page.waitFor(1000);
+        // условие на последнее сообщение
+        await scenarioParam.page.click(editNextConditionLocator2);
+        await scenarioParam.page.waitFor(1000);
+        element = await scenarioParam.page.$(nextPointSlider);
+        sliderBox = await element.boundingBox();
+        await scenarioParam.page.mouse.move(sliderBox.x + 5, sliderBox.y+5);
+        await scenarioParam.page.mouse.down();
+        await scenarioParam.page.mouse.move(sliderBox.x + 10, sliderBox.y+5);
+        await scenarioParam.page.mouse.up();
+        await scenarioParam.page.waitFor(2000);
+        await scenarioParam.page.click(nextCombobox);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(nextComboboxItem3);
+        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.click(actionApplyBtn);
+        await scenarioParam.page.waitFor(2000);
+        // сохр
+        await scenarioParam.page.click(saveBtn);
+        await scenarioParam.page.waitFor(2000);
     }
 }
 
