@@ -153,10 +153,12 @@ class UsualScenarios {
         const newAnswerCaseBtnLocator = '#configurator footer main .v-bottom-navigation button:nth-child(3)';
         const editNextConditionLocator = '#configurator main div.v-item--active .bot-answer-item .next-item';
         const userAnswerCaseLocator = '#configurator main div.v-item--active div.user-answer-case:nth-child(1)';
+        const answerTextAreaLocator = '';
         await scenarioParam.page.waitForSelector(newAnswerCaseBtnLocator, {timeout: 5000});
         await scenarioParam.page.click(newAnswerCaseBtnLocator);
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(userAnswerCaseLocator);
+
     }
 }
 

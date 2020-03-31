@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "node tests/index.js"
+    "test": "node tests/index.js",
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "axios": "^0.19.2",
