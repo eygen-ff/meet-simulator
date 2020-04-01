@@ -391,6 +391,23 @@ const BotStore = {
                 });
             });
         },
+        deleteBot: (state, payload) => {
+            console.debug('deleteBot', payload);
+            return new Promise((resolve, reject) => {
+                BotApi.deleteBot(
+                    state.getters.getToken, 
+                    state.getters.getUid,
+                    payload.id
+                ).then((response) => {
+                    if (response.result === false) {
+                        throw Error(response.error ? response.error : 'Fail to update bot');
+                    }
+                    resolve(response.result);
+                }).catch((e) => {
+                    reject(e);
+                });
+            });
+        },
 
         saveOwnBotMessages(state, payload) {
             return new Promise((resolve, reject) => {

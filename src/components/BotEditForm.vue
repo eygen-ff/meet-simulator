@@ -23,6 +23,7 @@
     <v-row>
       <v-col>
         <v-btn class="primary" @click="onSubmit">{{ this.inputForm ? 'Update' : 'Create'}}</v-btn>
+        <v-btn class="warning ml-1" v-if="this.inputForm" @click="onDeleteBot">Delete</v-btn>
       </v-col>
     </v-row>
   
@@ -57,6 +58,9 @@ export default {
     methods: {
       onSubmit() {
         this.$emit('submit', this.form);
+      },
+      onDeleteBot() {
+        this.$emit('delete', this.form);
       }
     }
 }

@@ -273,6 +273,19 @@ class BotApi {
      * @param {*} token 
      * @param {*} uid 
      * @param {*} botId 
+     */
+    async deleteBot(token, uid, botId) {
+        const response = await this.getAxiosAuth(token, uid).delete('/bot/' + botId);
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+    }
+
+    /**
+     * @param {*} token 
+     * @param {*} uid 
+     * @param {*} botId 
      * @param {*} messages 
      */
     async saveOwnBotMessages(token, uid, botId, messages) {

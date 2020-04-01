@@ -26,7 +26,12 @@
 
         <v-row>
           <v-col>
-            <bot-edit-form v-if="flagShowForm" :input-form="form" v-on:submit="onBotEditFormSubmit"></bot-edit-form>
+            <bot-edit-form 
+              v-if="flagShowForm" 
+              :input-form="form" 
+              v-on:submit="onBotEditFormSubmit"
+              v-on:delete="onBotDelete"
+            ></bot-edit-form>
           </v-col>
         </v-row>
 
@@ -110,6 +115,14 @@ export default {
           actionName = 'updateBot';
         }
         this.$store.dispatch(actionName, payload)
+          .then(() => {
+            this.flagShowForm = false;
+            this.$store.dispatch('loadMyOwnBots');
+          })
+          .catch(console.error);
+      },
+      onBotDelete(payload) {
+        this.$store.dispatch('deleteBot', payload)
           .then(() => {
             this.flagShowForm = false;
             this.$store.dispatch('loadMyOwnBots');
