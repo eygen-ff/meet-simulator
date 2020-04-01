@@ -256,13 +256,13 @@ class UsualScenarios {
         await scenarioParam.page.click(accordeonFirstSlide);
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(newNextConditionBtnLocator);
-        await scenarioParam.page.click(newNextConditionBtnLocator);
+        //await scenarioParam.page.click(newNextConditionBtnLocator);
         await scenarioParam.page.waitFor(500);
         // удаление 2 условия
-        await scenarioParam.page.click(editNextConditionLocator2);
+        /*await scenarioParam.page.click(editNextConditionLocator2);
         await scenarioParam.page.waitFor(1000);
         await scenarioParam.page.click(nextConditionDeleteBtn);
-        await scenarioParam.page.waitFor(1000);
+        await scenarioParam.page.waitFor(1000);*/
         // условие на последнее сообщение
         await scenarioParam.page.click(editNextConditionLocator2);
         await scenarioParam.page.waitFor(1000);
@@ -281,7 +281,7 @@ class UsualScenarios {
         await scenarioParam.page.waitFor(2000);
         // сохр
         await scenarioParam.page.click(saveBtn);
-        await scenarioParam.page.waitFor(2000);
+        await scenarioParam.page.waitFor(60000);
     }
 }
 

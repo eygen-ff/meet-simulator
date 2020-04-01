@@ -54,6 +54,7 @@ class TestHelper {
             }
             console.debug(chalk.gray('console message >>>'), msgString);
             await this.screenThis(page, scenario, 'console_error');
+            page.waitFor(30000);
             await browser.close();
             throw Error('Get unexpected console message');
         });

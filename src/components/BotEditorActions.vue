@@ -2,7 +2,7 @@
     <v-content class="py-0">
         <v-row v-if="botMessage || nextItem || caseItem">
             <v-col>
-                <v-card v-if="botMessage" class="mx-auto" outlined>
+                <v-card v-if="botMessage" class="mx-auto bot-message-container" outlined>
                     <v-card-title>Message editor</v-card-title>
                     <v-card-text>
                         <v-textarea
@@ -23,7 +23,7 @@
                                 <v-col class="body-1 pt-1 pb-0">
                                     If user points greater than
                                 </v-col>
-                                <v-col cols="12" class="py-0">
+                                <v-col cols="12" class="py-0 next-slider-container">
                                     <v-slider
                                         dense
                                         :disabled="flagFreezePoints"
@@ -40,7 +40,7 @@
                                 <v-col class="body-1 pt-2 pb-0">
                                     Bot will say this message
                                 </v-col>
-                                <v-col cols="12" class="py-0">
+                                <v-col cols="12" class="py-0 next-combobox-container">
                                     <v-combobox label="Target message ID" v-model="tempComboId" :items="comboMessageList"></v-combobox>
                                 </v-col>
                             </v-row>
@@ -58,7 +58,7 @@
                                 <v-col class="body-1 pt-1 pb-0">
                                     Points for answer
                                 </v-col>
-                                <v-col cols="12" class="py-0">
+                                <v-col cols="12" class="py-0 points-slider-container">
                                     <v-slider
                                         dense
                                         v-model="tempPoints"
@@ -74,7 +74,7 @@
                                 <v-col class="body-1 pt-2 pb-0">
                                     User message
                                 </v-col>
-                                <v-col cols="12" class="py-0">
+                                <v-col cols="12" class="py-0 answer-text-container">
                                     <v-textarea
                                         outlined
                                         no-resize
@@ -118,7 +118,7 @@
                         <v-btn v-if="!isFirst" class="px-0" @click="onClickDeleteMessage"><span>Delete</span><v-icon>mdi-beaker-remove-outline</v-icon></v-btn>
                         <v-btn class="px-0" @click="onClickAddCondition"><span>Add condition</span><v-icon>mdi-help-network-outline</v-icon></v-btn>
                         <v-btn class="px-0" @click="onClickAddCase"><span>Add case</span><v-icon>mdi-graph</v-icon></v-btn>
-                        <v-btn class="px-0" @click="onClickSave"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
+                        <v-btn class="px-0 save-btn" @click="onClickSave"><span>Save</span><v-icon>mdi-cloud-upload</v-icon></v-btn>
                     </template>
 
                 </v-bottom-navigation>  
