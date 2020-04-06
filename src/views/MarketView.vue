@@ -76,10 +76,11 @@ export default {
             this.$router.push({name: 'Home'})
         },
         onBotAdd(bot) {
-          console.debug('onBotAdd', bot);
-          if (bot.stat.price > 0) {
-            this.$store.dispatch('buyMarketBot', bot);
-          }
+          this.$store.dispatch('buyMarketBot', bot)
+            .then(() => {
+              this.$store.dispatch('loadMarketBots');
+            })
+            .catch(console.error);
         }
     },
 };

@@ -8,14 +8,19 @@
         
         <v-list-item-content>
             <v-list-item-title v-text="item.name"></v-list-item-title>
-            <v-list-item-title class="price green--text"> {{item.stat.price ? item.stat.price : 'Free'}} credits </v-list-item-title>
+            <v-list-item-title v-if="!item.market.isPurchased" class="price green--text"> {{item.stat.price ? item.stat.price : 'Free'}} credits </v-list-item-title>
         </v-list-item-content>
 
-        <v-list-item-icon>
+        <v-list-item-icon v-if="!item.market.isPurchased">
             <v-btn color="teal darken-4 ml-2" @click="onClickAdd(item)">
-            <v-icon>mdi-plus</v-icon>
+                <v-icon>mdi-plus</v-icon>
             </v-btn>
         </v-list-item-icon>
+
+        <v-list-item-icon v-else>
+            <v-icon>mdi-check</v-icon>
+        </v-list-item-icon>
+
     </v-list-item>
     </div>
 </template>

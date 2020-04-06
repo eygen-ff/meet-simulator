@@ -52,7 +52,7 @@ const BotStore = {
         name: null,
         info: null,
         photo: null,
-        status: null,
+        botStatus: null,
         rate: 0,
         gallery: null,
         messages: null,
@@ -85,7 +85,7 @@ const BotStore = {
          * 3 - бот пишет сообщение
          */
         getBotStatus: (state) => {
-            return state.status;
+            return state.botStatus;
         },
         getBotRate: (state) => {
             return state.rate;
@@ -118,7 +118,7 @@ const BotStore = {
          * ответы
          */
         getChatAnswerCases: (state) => {
-            if (state.chatState === 'cases' && state.status === 1) {
+            if (state.chatState === 'cases' && state.botStatus === 1) {
                 return state.lastMessage.cases;
             } else {
                 return null;
@@ -150,7 +150,7 @@ const BotStore = {
             state.name = bot.name;
             state.info = bot.info;
             state.photo = bot.photoUrl;
-            state.status = bot.status;
+            state.botStatus = bot.status; // @todo
             state.rate = bot.rate;
             state.gallery = bot.gallery;
         },
@@ -159,7 +159,7 @@ const BotStore = {
             state.name = null;
             state.info = null;
             state.photo = null;
-            state.status = null;
+            state.botStatus = null;
             state.rate = 0;
             state.gallery = null;
             state.messages = null;
@@ -242,7 +242,6 @@ const BotStore = {
     },
     actions: {
         loadBot: (state, payload) => {
-            console.debug('loadBot');
             return new Promise((resolve, reject) => {
                 state.commit('toggleLoadingBotInfo', true);
                 BotApi.getBotStatus(state.getters.getToken, state.getters.getUid, payload.id)
@@ -279,12 +278,12 @@ const BotStore = {
         },
         selectCase: (state, payload) => {
             return new Promise((resolve, reject) => {
-                state.commit('toggleSendingCase', true);
-                BotApi.sendCase(payload.botId, payload.caseId, null)
+                //state.commit('toggleSendingCase', true);
+                BotApi.sendCase(state.getters.getToken, state.getters.getUid, payload.botId, payload.caseId, null)
                     .then((replyPayload) => {
                         replyPayload.selected = payload.caseId;
                         state.commit('setReply', replyPayload);
-                        state.commit('toggleSendingCase', false);
+                        //state.commit('toggleSendingCase', false);
                         state.commit('setChat');
                         state.commit('setChatState');
                         //console.debug('message', state.getters.getChatMessages, state.getters.getAllMessages);

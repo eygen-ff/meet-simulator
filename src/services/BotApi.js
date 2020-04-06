@@ -129,11 +129,24 @@ class BotApi {
         }*/
     }
 
-    async sendCase(botId, caseId, userData) {
-        let showTime = new Date();
-        //showTime.setMinutes(showTime.getMinutes() + 1);
+    /**
+     * отправка варианта ответа
+     * @param {*} botId 
+     * @param {*} caseId 
+     * @param {*} attach @todo резервное поле 
+     */
+    async sendCase(token, uid, botId, caseId, attach) {
+        const response = await this.getAxiosAuth(token, uid).post('/bot/chat/' + botId, {
+            caseId: caseId,
+            attach: attach
+        });
+        if (!response.data || response.data.result === false) {
+            throw Error(response.data.message ? 'Server error: ' + response.data.message : 'API result is false');
+        }
+        return response.data;
+
+        /*let showTime = new Date();
         showTime.setSeconds(showTime.getSeconds() + 10);
-        console.debug('set showtime', showTime.toString());
         return {
             botId,
             caseId,
@@ -147,7 +160,8 @@ class BotApi {
                 {id: 15, text: 'Immediate Reply case A'},
                 {id: 16, text: 'Immediate Reply case B'},
             ], 
-        };
+        };*/
+
     }
 
     getAuthToken(token, uid) {
