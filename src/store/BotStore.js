@@ -1,6 +1,7 @@
 'use strict';
 
 import BotApi from '../services/BotApi.js';
+import {ChatStatuses} from '../helpers/ChatStatuses.js';
 
 
 const isReplyInFuture = (lastMessage) => {
@@ -58,6 +59,7 @@ const BotStore = {
         messages: null,
         chat: null,
         chatState: null,
+        chatCases: null,
         lastMessage: null,
         loadingInfo: false,
         myBots: [],
@@ -78,12 +80,6 @@ const BotStore = {
         getBotInfo: (state) => {
             return state.info;
         },
-        /**
-         * 0 - бот недоступен
-         * 1 - бот онлайн
-         * 2 - бот оффлайн
-         * 3 - бот пишет сообщение
-         */
         getBotStatus: (state) => {
             return state.botStatus;
         },
@@ -118,8 +114,8 @@ const BotStore = {
          * ответы
          */
         getChatAnswerCases: (state) => {
-            if (state.chatState === 'cases' && state.botStatus === 1) {
-                return state.lastMessage.cases;
+            if (state.chatState === 'cases' && state.botStatus === ChatStatuses.WaitUserReply) {
+                return state.chatCases;
             } else {
                 return null;
             }
@@ -165,6 +161,7 @@ const BotStore = {
             state.messages = null;
             state.lastMessage = null;
             state.chat = null;
+            state.chatCases = null;
         },
         toggleLoadingBotInfo: (state, payload) => {
             state.loadingInfo = payload;
@@ -177,7 +174,11 @@ const BotStore = {
             state.isSendingCase = flag;
         },
         setReply: (state, payload) => {
-            state.messages[state.messages.length - 1].selected = payload.selected;
+            //@todo 
+            state;
+            payload;
+
+            /*state.messages[state.messages.length - 1].selected = payload.selected;
             state.messages[state.messages.length - 1].sendAt = new Date().toString();
             state.messages.push({
                 id: payload.messageId, 
@@ -186,7 +187,7 @@ const BotStore = {
                 selected: null,
                 sendAt: null
             });
-            state.lastMessage = state.messages[state.messages.length - 1];
+            state.lastMessage = state.messages[state.messages.length - 1];*/
         },
         setChat: (state) => {
             if (!state.messages) {
@@ -230,6 +231,9 @@ const BotStore = {
         setChatState: (state) => {
             state.chatState = chatStateHelper(state.lastMessage, state.isSendingCase);
         },
+        setCases: (state, payload) => {
+            state.chatCases = payload;
+        },
         setMyBots: (state, payload) => {
             state.myBots = payload;
         },
@@ -267,6 +271,7 @@ const BotStore = {
                 BotApi.getBotChat(state.getters.getToken, state.getters.getUid, payload.botId)
                     .then((response) => {
                         state.commit('setMessages', response.chat);
+                        state.commit('setCases', response.cases);
                         state.commit('setChat');
                         state.commit('setChatState');
                         resolve();

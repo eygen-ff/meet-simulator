@@ -1,0 +1,56 @@
+{
+    "locators": "locators-mobile.json",
+    "screenshots": {
+        "path": "/screenshots/",
+        "prefix": "04-"
+    },
+    "ignoreConsoleMessages": {
+        "types": [
+            "log", "debug", "info", "trace"
+        ],
+        "mask": [
+            "verbose @ [DOM] Input elements should have autocomplete attributes"
+        ]
+    },
+    "scenarios": [
+        {
+            "method": "resetChats",
+            "params": {
+                "url": "http://localhost:5000/"
+            }
+        },
+        {
+            "method": "resetAddedBots",
+            "params": {
+                "url": "http://localhost:5000/"
+            }
+        },
+        {
+            "method": "openLogin",
+            "params": {
+                "url": "http://localhost:8082/"
+            }
+        },
+        {
+            "method": "submitLogin",
+            "params": {
+                "email": "root@test.ee",
+                "password": "123123123"
+            }
+        },
+        {
+            "method": "clickToMarket",
+            "params": {}
+        },
+        {
+            "method": "addBotFromMarket",
+            "params": {
+                "botIndex": 1
+            }
+        },
+        {
+            "method": "backToMainPage",
+            "params": {}
+        }
+    ]
+}

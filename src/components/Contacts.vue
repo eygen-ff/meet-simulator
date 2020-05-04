@@ -45,6 +45,18 @@
 </template>
 
 <script>
+import {ChatStatuses} from '../helpers/ChatStatuses.js';
+
+const OnlineStatues = [
+  ChatStatuses.WaitUserReply,
+  ChatStatuses.WaitBotReply
+];
+
+const OfflineStatuses = [
+  ChatStatuses.Error,
+  ChatStatuses.ChatFinished
+];
+
 export default {
     props: {
         list: {
@@ -56,7 +68,7 @@ export default {
       online() {
         let online = [];
         for (let i in this.list) {
-          if ([1,3].includes(this.list[i].status)) {
+          if (OnlineStatues.includes(this.list[i].status)) {
             online.push(this.list[i]);
           }
         }
@@ -65,7 +77,7 @@ export default {
       offline() {
         let offline = [];
         for (let i in this.list) {
-          if ([0,2].includes(this.list[i].status)) {
+          if (OfflineStatuses.includes(this.list[i].status)) {
             offline.push(this.list[i]);
           }
         }
@@ -84,10 +96,10 @@ export default {
       },
       msgColor(item) {
         let clas = '';
-        if (item.status === 1) {
+        if (OfflineStatuses.includes(item.status)) {
           clas = 'grey';
         }
-        if (item.status === 3) {
+        if (OnlineStatues.includes(item.status)) {
           clas = 'green';
         }
         return clas;

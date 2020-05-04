@@ -61,6 +61,7 @@ import Message from "../components/Message.vue";
 import BotInfoDialog from "../components/BotInfoDialog.vue";
 import AnswerPanel from "../components/AnswerPanel.vue";
 import {mixin as VueTimers} from 'vue-timers';
+import {ChatStatuses} from '../helpers/ChatStatuses.js';
 
 export default {
   components: {
@@ -129,21 +130,30 @@ export default {
   computed: {
     getBotStatusIcon: function() {
       const statuses = {
-        0: "phonelink_erase",
+        /*0: "phonelink_erase",
         1: "chat_bubble_outline",
         2: "chat_bubble_outline",
-        3: "textsms"
+        3: "textsms"*/
+        
       };
+      statuses[ChatStatuses.Error] = 'phonelink_erase';
+      statuses[ChatStatuses.ChatFinished] = 'chat_bubble_outline';
+      statuses[ChatStatuses.WaitUserReply] = 'chat_bubble_outline';
+      statuses[ChatStatuses.WaitBotReply] = 'textsms';
       const status = this.$store.getters.getBotStatus;
       return status !== null ? statuses[status] : statuses[0];
     },
     getBotStatusIconColor: function() {
       const statuses = {
-        0: "blue-grey--text",
+        /*0: "blue-grey--text",
         1: "green--text accent-4",
         2: "blue-grey--text darken-1",
-        3: "green--text"
+        3: "green--text"*/
       };
+      statuses[ChatStatuses.Error] = 'blue-grey--text';
+      statuses[ChatStatuses.ChatFinished] = 'blue-grey--text darken-1';
+      statuses[ChatStatuses.WaitUserReply] = 'green--text accent-4';
+      statuses[ChatStatuses.WaitBotReply] = 'green--text';
       const status = this.$store.getters.getBotStatus;
       return status !== null ? statuses[status] : statuses[0];
     }
