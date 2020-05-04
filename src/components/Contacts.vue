@@ -34,7 +34,7 @@
       <v-list-item-content>
           <v-list-item-title>Отсутствуют собеседники, посетите </v-list-item-title>
           <v-list-item-title class="mt-2">
-            <v-btn block rounded class="lime lighten-2 black--text" @click="onMarketClick">
+            <v-btn block rounded class="bot-market-btn lime lighten-2 black--text" @click="onMarketClick">
               <v-icon>apps</v-icon> 
               BotMarket
             </v-btn>

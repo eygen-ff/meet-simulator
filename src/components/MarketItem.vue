@@ -12,7 +12,7 @@
         </v-list-item-content>
 
         <v-list-item-icon v-if="!item.market.isPurchased">
-            <v-btn color="teal darken-4 ml-2" @click="onClickAdd(item)">
+            <v-btn color="btn-add-bot teal darken-4 ml-2" @click="onClickAdd(item)">
                 <v-icon>mdi-plus</v-icon>
             </v-btn>
         </v-list-item-icon>

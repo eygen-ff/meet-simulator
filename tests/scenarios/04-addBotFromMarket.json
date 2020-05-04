@@ -2,7 +2,7 @@
     "locators": "locators-mobile.json",
     "screenshots": {
         "path": "/screenshots/",
-        "prefix": "03-"
+        "prefix": "04-"
     },
     "ignoreConsoleMessages": {
         "types": [
@@ -20,7 +20,7 @@
             }
         },
         {
-            "method": "resetBotMessages",
+            "method": "resetAddedBots",
             "params": {
                 "url": "http://localhost:5000/"
             }
@@ -39,29 +39,18 @@
             }
         },
         {
-            "method": "selectMenuBotEditor"
+            "method": "clickToMarket",
+            "params": {}
         },
         {
-            "method": "editBotStory",
+            "method": "addBotFromMarket",
             "params": {
                 "botIndex": 1
             }
         },
         {
-            "method": "addNewMessagesToStory",
-            "params": {
-                "isFirst": true,
-                "firstUserAnswer": "Hi!",
-                "secondUserAnswer": "Shit!",
-                "botSecondMessage": "Hey!",
-                "botThirdMessage": "Yea.. Its funny"
-            }
-        },
-        {
-            "method": "publishBot",
-            "params": {
-                "botIndex": 2
-            }
+            "method": "backToMainPage",
+            "params": {}
         }
     ]
 }

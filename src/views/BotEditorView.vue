@@ -42,7 +42,7 @@
         <v-list subheader v-if="$store.getters.getMyOwnBots.length">
             <v-subheader>My Bots</v-subheader>
 
-            <v-list-item v-for="item in $store.getters.getMyOwnBots" :key="item.name">
+            <v-list-item v-for="item in $store.getters.getMyOwnBots" :key="item.name" class="my-bots-list-item">
                 <v-list-item-avatar>
                   <v-img v-if="item.photoUrl" :src="item.photoUrl"></v-img>
                 </v-list-item-avatar>
@@ -62,10 +62,10 @@
                   <v-btn small @click="onBotConfig(item)" class="mb-1">
                     <v-icon class="mr-1">mdi-graph</v-icon> story
                   </v-btn>
-                  <v-btn v-if="!item.flagPublish" small @click="onBotPublish(item)">
+                  <v-btn v-if="!item.flagPublish" small @click="onBotPublish(item)" class="publish-btn">
                     <v-icon class="mr-1">mdi-timeline-text</v-icon> publish
                   </v-btn>
-                  <v-btn v-if="item.flagPublish" color="indigo darken-1" small @click="onBotUnpublish(item)">
+                  <v-btn v-if="item.flagPublish" color="indigo darken-1" small @click="onBotUnpublish(item)" class="unpublish-btn">
                     <v-icon class="mr-1">mdi-timeline-text</v-icon> unpublish
                   </v-btn>
                 </v-list-item-icon>

@@ -49,12 +49,20 @@ class UsualScenarios {
         await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetChats');
     }
 
-    async resetDialogs(scenarioParam) {
+    async resetBotMessages(scenarioParam) {
         const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
-        const token = TestHelper.generateSecureToken('SecureService.resetDialogs');
+        const token = TestHelper.generateSecureToken('SecureService.resetBotMessages');
         const httpClient = this.getAxiosAuth(token);
-        console.debug('resetDialogs', url + 'datesimapi/1.0.0/secure/resetDialogs');
-        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetDialogs');
+        console.debug('resetDialogs', url + 'datesimapi/1.0.0/secure/resetBotMessages');
+        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetBotMessages');
+    }
+
+    async resetAddedBots(scenarioParam) {
+        const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
+        const token = TestHelper.generateSecureToken('SecureService.resetAddedBots');
+        const httpClient = this.getAxiosAuth(token);
+        console.debug('resetAddedBots', url + 'datesimapi/1.0.0/secure/resetAddedBots');
+        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetAddedBots');
     }
 
     /**
@@ -301,6 +309,34 @@ class UsualScenarios {
         // сохр
         await scenarioParam.page.click(saveBtn);
         await scenarioParam.page.waitFor(3000);
+    }
+
+    async publishBot(scenarioParam) {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const publishBtn = '.v-list .my-bots-list-item:nth-child(' + params.botIndex + ') .publish-btn';
+        await scenarioParam.page.waitForSelector(publishBtn, {timeout: 5000});
+        await scenarioParam.page.click(publishBtn);
+    }
+
+    async clickToMarket(scenarioParam) {
+        //const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const marketBtn = '.bot-market-btn';
+        await scenarioParam.page.waitForSelector(marketBtn, {timeout: 5000});
+        await scenarioParam.page.click(marketBtn);
+    }
+
+    async addBotFromMarket(scenarioParam) {
+        const params = scenarioParam.scenario.scenarios[scenarioParam.index].params;
+        const addBtn = '.v-list .btn-add-bot:nth-child(' + params.botIndex + ')';
+        await scenarioParam.page.waitForSelector(addBtn, {timeout: 5000});
+        await scenarioParam.page.click(addBtn);
+
+    }
+
+    async backToMainPage(scenarioParam) {
+        const backBtn = 'header button.v-btn:nth-child(1)';
+        await scenarioParam.page.waitForSelector(backBtn, {timeout: 5000});
+        await scenarioParam.page.click(backBtn);
     }
 }
 
