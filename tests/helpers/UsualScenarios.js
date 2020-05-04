@@ -8,11 +8,7 @@
 //const {ScenarioParamVo} = require('./ScenarioParamVo.js');
 
 const axios = require('axios');
-const crypto = require('crypto');
-
-const hashSomething = (str) => {
-    return crypto.createHash('sha256').update(str).digest('hex');
-}
+const TestHelper = require('./TestHelper.js');
 
 class UsualScenarios {
 
@@ -30,12 +26,35 @@ class UsualScenarios {
      */
     async resetDb(scenarioParam) {
         const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
-        const dt = new Date();
-        const timeStr = String(dt.getFullYear()) + dt.getMonth() + dt.getDate();
-        const token = hashSomething('SecureService.resetDb' + timeStr);
+        const token = TestHelper.generateSecureToken('SecureService.resetDb');
         const httpClient = this.getAxiosAuth(token);
-        console.debug('resetDb', url + 'datesimapi/1.0.0/secure/resetDb', timeStr, token);    
+        console.debug('resetDb', url + 'datesimapi/1.0.0/secure/resetDb');
         await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetDb');
+    }
+    
+
+    async resetBots(scenarioParam) {
+        const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
+        const token = TestHelper.generateSecureToken('SecureService.resetBots');
+        const httpClient = this.getAxiosAuth(token);
+        console.debug('resetBots', url + 'datesimapi/1.0.0/secure/resetBots');    
+        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetBots');
+    }
+
+    async resetChats(scenarioParam) {
+        const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
+        const token = TestHelper.generateSecureToken('SecureService.resetChats');
+        const httpClient = this.getAxiosAuth(token);
+        console.debug('resetChats', url + 'datesimapi/1.0.0/secure/resetChats');
+        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetChats');
+    }
+
+    async resetDialogs(scenarioParam) {
+        const url = scenarioParam.scenario.scenarios[scenarioParam.index].params.url;
+        const token = TestHelper.generateSecureToken('SecureService.resetDialogs');
+        const httpClient = this.getAxiosAuth(token);
+        console.debug('resetDialogs', url + 'datesimapi/1.0.0/secure/resetDialogs');
+        await httpClient.delete(url + 'datesimapi/1.0.0/secure/resetDialogs');
     }
 
     /**
@@ -281,7 +300,7 @@ class UsualScenarios {
         await scenarioParam.page.waitFor(2000);
         // сохр
         await scenarioParam.page.click(saveBtn);
-        await scenarioParam.page.waitFor(60000);
+        await scenarioParam.page.waitFor(3000);
     }
 }
 

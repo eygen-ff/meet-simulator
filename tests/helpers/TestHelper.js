@@ -4,6 +4,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const chalk = require('chalk');
 const dtString = (new Date()).toISOString().replace(/:/g, '');
+const crypto = require('crypto');
 
 class TestHelper {
     /**
@@ -91,6 +92,16 @@ class TestHelper {
         if (page) {
             await this.screenThis(page, testParams, 'error');
         }
+    }
+
+    generateSecureToken(salt) {
+        const dt = new Date();
+        const timeStr = String(dt.getFullYear()) + dt.getMonth() + dt.getDate();
+        return this.hashSomething(salt + timeStr);
+    }
+
+    hashSomething(str) {
+        return crypto.createHash('sha256').update(str).digest('hex');
     }
 }
 

@@ -14,6 +14,18 @@
     },
     "scenarios": [
         {
+            "method": "resetChats",
+            "params": {
+                "url": "http://localhost:5000/"
+            }
+        },
+        {
+            "method": "resetDialogs",
+            "params": {
+                "url": "http://localhost:5000/"
+            }
+        },
+        {
             "method": "openLogin",
             "params": {
                 "url": "http://localhost:8082/"
